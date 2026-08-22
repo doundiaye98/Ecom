@@ -1,0 +1,205 @@
+/* Bannière confidentialité & cookies — Pure Essence Vita */
+.pev-consent {
+  position: fixed;
+  inset: auto 0 0 0;
+  z-index: 10000;
+  padding: max(0.75rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(110%);
+  transition: opacity 0.35s ease, transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pev-consent.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.pev-consent__panel {
+  max-width: 920px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem 1.25rem;
+  align-items: center;
+  padding: 1.1rem 1.25rem;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid rgba(201, 162, 39, 0.35);
+  box-shadow: 0 -8px 40px rgba(0, 68, 27, 0.12), 0 20px 50px rgba(0, 0, 0, 0.14);
+  backdrop-filter: blur(14px);
+}
+
+.pev-consent__icon {
+  display: none;
+}
+
+.pev-consent__content strong {
+  display: block;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.15rem;
+  color: #00441b;
+  margin-bottom: 0.35rem;
+}
+
+.pev-consent__content p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #3d4f44;
+}
+
+.pev-consent__content a {
+  color: #00441b;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.pev-consent__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.pev-consent__btn {
+  border: none;
+  border-radius: 999px;
+  padding: 0.62rem 1.05rem;
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  white-space: nowrap;
+}
+
+.pev-consent__btn:hover {
+  transform: translateY(-1px);
+}
+
+.pev-consent__btn--ghost {
+  background: transparent;
+  color: #00441b;
+  border: 1px solid rgba(0, 68, 27, 0.2);
+}
+
+.pev-consent__btn--gold {
+  background: linear-gradient(135deg, #f5e6a8, #d4af37, #b8860b);
+  color: #00441b;
+  box-shadow: 0 6px 18px rgba(201, 162, 39, 0.28);
+}
+
+.pev-consent__btn--outline {
+  background: #fff;
+  color: #00441b;
+  border: 1px solid rgba(201, 162, 39, 0.45);
+}
+
+/* Modal politique */
+.pev-consent-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(0, 20, 10, 0.55);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.pev-consent-modal.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.pev-consent-modal__box {
+  width: min(560px, 100%);
+  max-height: min(80vh, 640px);
+  overflow: auto;
+  background: #fff;
+  border-radius: 18px;
+  border: 1px solid rgba(201, 162, 39, 0.3);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.2);
+  padding: 1.5rem;
+}
+
+.pev-consent-modal__box h2 {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  color: #00441b;
+  margin: 0 0 0.75rem;
+  font-size: 1.45rem;
+}
+
+.pev-consent-modal__box h3 {
+  font-size: 0.95rem;
+  color: #0d3d28;
+  margin: 1.1rem 0 0.4rem;
+}
+
+.pev-consent-modal__box p,
+.pev-consent-modal__box li {
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: #3d4f44;
+}
+
+.pev-consent-modal__box ul {
+  margin: 0.35rem 0 0;
+  padding-left: 1.2rem;
+}
+
+.pev-consent-modal__close {
+  float: right;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 68, 27, 0.08);
+  color: #00441b;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.pev-consent-modal__footer {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+body.pev-consent-modal-open {
+  overflow: hidden;
+}
+
+.footer__privacy {
+  color: inherit;
+  opacity: 0.75;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.footer__privacy:hover {
+  opacity: 1;
+  color: var(--gold, #c9a227);
+}
+
+@media (max-width: 720px) {
+  .pev-consent__panel {
+    grid-template-columns: 1fr;
+  }
+  .pev-consent__actions {
+    justify-content: stretch;
+  }
+  .pev-consent__btn {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+}

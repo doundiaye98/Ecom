@@ -4,12 +4,19 @@ declare(strict_types=1);
 
 final class SettingsRepository
 {
+    private static array $cache = [];
+
     public static function get(string $key, ?string $default = null): ?string
     {
+        if (array_key_exists($key, self::$cache)) {
+            return self::$cache[$key];
+        }
         $stmt = Database::pdo()->prepare('SELECT setting_value FROM settings WHERE setting_key = ? LIMIT 1');
         $stmt->execute([$key]);
         $row = $stmt->fetch();
-        return $row ? (string) $row['setting_value'] : $default;
+        $value = $row ? (string) $row['setting_value'] : $default;
+        self::$cache[$key] = $value;
+        return $value;
     }
 
     public static function getInt(string $key, int $default): int
@@ -38,5 +45,6 @@ final class SettingsRepository
              ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)'
         );
         $stmt->execute([$key, $value]);
+        self::$cache[$key] = $value;
     }
 }

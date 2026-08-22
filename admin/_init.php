@@ -12,6 +12,8 @@ if (!is_file(dirname(__DIR__) . '/config/database.php')) {
 
 Database::connect(db_config());
 Auth::startSession();
+require_once dirname(__DIR__) . '/includes/Csrf.php';
+Csrf::init();
 
 function admin_redirect(string $path): void
 {
@@ -23,6 +25,13 @@ function admin_require_login(): void
 {
     if (!Auth::check()) {
         admin_redirect('login.php');
+    }
+}
+
+function admin_verify_csrf_post(): void
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        Csrf::requireValid($_POST['_csrf'] ?? null);
     }
 }
 
@@ -69,7 +78,7 @@ function admin_layout(string $title, string $content, string $active = ''): void
         <a href="orders.php" class="<?= $active === 'orders' ? 'is-active' : '' ?>">Commandes</a>
         <a href="products.php" class="<?= $active === 'products' ? 'is-active' : '' ?>">Produits</a>
         <a href="messages.php" class="<?= $active === 'messages' ? 'is-active' : '' ?>">Messages</a>
-        <a href="../index.html">Boutique</a>
+        <a href="../index.php">Boutique</a>
         <a href="logout.php">Déconnexion</a>
       </nav>
     </div>

@@ -8,6 +8,7 @@ if (Auth::check()) {
 
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    Csrf::requireValid($_POST['_csrf'] ?? null);
     $username = trim($_POST['username'] ?? '');
     $password = (string) ($_POST['password'] ?? '');
     if (Auth::login($username, $password)) {
@@ -36,6 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
   <form class="card" method="post">
+    <?= Csrf::field() ?>
     <h1>Administration</h1>
     <p>Connectez-vous pour gérer commandes et produits.</p>
     <?php if ($error): ?><p class="error"><?= htmlspecialchars($error) ?></p><?php endif; ?>

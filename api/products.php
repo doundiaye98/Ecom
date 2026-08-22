@@ -41,7 +41,7 @@ try {
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 respond(['ok' => false, 'error' => 'POST requis'], 405);
             }
-            Auth::requireAdmin();
+            api_require_admin_csrf($input);
 
             $required = ['id', 'name', 'category', 'price', 'image'];
             foreach ($required as $field) {
@@ -57,7 +57,7 @@ try {
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 respond(['ok' => false, 'error' => 'POST requis'], 405);
             }
-            Auth::requireAdmin();
+            api_require_admin_csrf($input);
             $id = trim((string) ($input['id'] ?? ''));
             if ($id === '') {
                 respond(['ok' => false, 'error' => 'ID manquant'], 400);
@@ -69,5 +69,6 @@ try {
             respond(['ok' => false, 'error' => 'Action inconnue'], 400);
     }
 } catch (Throwable $e) {
-    respond(['ok' => false, 'error' => $e->getMessage()], 500);
+    ErrorHandler::log('API', $e->getMessage(), $e->getFile(), $e->getLine());
+    respond(['ok' => false, 'error' => safe_error_message($e->getMessage())], 500);
 }

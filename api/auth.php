@@ -20,7 +20,7 @@ switch ($action) {
         if (!Auth::login($username, $password)) {
             respond(['ok' => false, 'error' => 'Identifiants incorrects'], 401);
         }
-        respond(['ok' => true, 'user' => Auth::user()]);
+        respond(['ok' => true, 'user' => Auth::user(), 'csrfToken' => Csrf::token()]);
 
     case 'logout':
         Auth::logout();
@@ -31,6 +31,7 @@ switch ($action) {
             'ok' => true,
             'authenticated' => Auth::check(),
             'user' => Auth::user(),
+            'csrfToken' => Auth::check() ? Csrf::token() : null,
         ]);
 
     default:

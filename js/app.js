@@ -72,22 +72,22 @@ function renderProducts() {
   grid.innerHTML = items
     .map(
       (p, i) => `
-    <article class="product-card" style="animation-delay:${i * 0.05}s" data-id="${p.id}">
-      <div class="product-card__media" data-open="${p.id}">
-        ${p.badge ? `<span class="product-card__badge">${p.badge}</span>` : ""}
-        <img src="${encodeURI(p.image)}" alt="${p.name}" loading="lazy" />
+    <article class="product-card" style="animation-delay:${i * 0.05}s" data-id="${escapeAttr(p.id)}">
+      <div class="product-card__media" data-open="${escapeAttr(p.id)}">
+        ${p.badge ? `<span class="product-card__badge">${escapeHtml(p.badge)}</span>` : ""}
+        <img src="${encodeURI(p.image)}" alt="${escapeAttr(p.name)}" loading="lazy" />
       </div>
       <div class="product-card__body">
-        <span class="product-card__cat">${p.categoryLabel}</span>
-        <h3>${p.name}</h3>
-        <p class="product-card__desc">${p.short}</p>
+        <span class="product-card__cat">${escapeHtml(p.categoryLabel)}</span>
+        <h3>${escapeHtml(p.name)}</h3>
+        <p class="product-card__desc">${escapeHtml(p.short)}</p>
         <div class="product-card__footer">
           <span class="price">${formatPrice(p.price)}</span>
           <div class="product-card__actions">
-            <button class="btn-icon" data-open="${p.id}" aria-label="Voir ${p.name}" title="Détails">
+            <button class="btn-icon" data-open="${escapeAttr(p.id)}" aria-label="Voir ${escapeAttr(p.name)}" title="Détails">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
             </button>
-            <button class="btn-icon btn-icon--gold" data-add="${p.id}" aria-label="Ajouter ${p.name}" title="Ajouter">
+            <button class="btn-icon btn-icon--gold" data-add="${escapeAttr(p.id)}" aria-label="Ajouter ${escapeAttr(p.name)}" title="Ajouter">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L5 3H2"/><path d="M12 11v4M10 13h4"/></svg>
             </button>
           </div>
@@ -128,14 +128,14 @@ function updateCartUI() {
       const p = getProduct(item.id);
       if (!p) return "";
       return `
-      <div class="cart-item" data-id="${p.id}">
-        <img src="${encodeURI(p.image)}" alt="${p.name}" />
+      <div class="cart-item" data-id="${escapeAttr(p.id)}">
+        <img src="${encodeURI(p.image)}" alt="${escapeAttr(p.name)}" />
         <div>
-          <h4>${p.name}</h4>
+          <h4>${escapeHtml(p.name)}</h4>
           <p class="meta">${item.qty} × ${formatPrice(p.price)}</p>
           <p class="meta"><strong>${formatPrice(p.price * item.qty)}</strong></p>
         </div>
-        <button class="cart-item__remove" data-remove="${p.id}" aria-label="Retirer">×</button>
+        <button class="cart-item__remove" data-remove="${escapeAttr(p.id)}" aria-label="Retirer">×</button>
       </div>`;
     })
     .join("");
@@ -213,7 +213,7 @@ function openModal(id) {
   $("#modalTitle").textContent = p.name;
   $("#modalPrice").textContent = formatPrice(p.price);
   $("#modalDesc").textContent = p.desc;
-  $("#modalBenefits").innerHTML = p.benefits.map((b) => `<li>${b}</li>`).join("");
+  $("#modalBenefits").innerHTML = p.benefits.map((b) => `<li>${escapeHtml(b)}</li>`).join("");
   $("#modalQty").value = 1;
 
   $("#productModal").hidden = false;
@@ -412,7 +412,7 @@ function goToCheckout() {
     return;
   }
   saveCart();
-  window.location.href = "checkout.html";
+  window.location.href = "checkout.php";
 }
 
 function checkoutWhatsApp() {

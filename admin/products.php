@@ -7,6 +7,7 @@ admin_require_login();
 
 $message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    admin_verify_csrf_post();
     $action = $_POST['action'] ?? '';
     if ($action === 'save') {
         ProductRepository::upsert([
@@ -42,6 +43,7 @@ ob_start();
 <div class="track-card" style="margin-bottom:1.5rem">
   <h2><?= $edit ? 'Modifier le produit' : 'Nouveau produit' ?></h2>
   <form method="post" class="form-grid">
+    <?= Csrf::field() ?>
     <input type="hidden" name="action" value="save" />
     <div class="form-row"><label>ID (slug)</label><input name="id" required value="<?= htmlspecialchars($edit['id'] ?? '') ?>" <?= $edit ? 'readonly' : '' ?> /></div>
     <div class="form-row"><label>Nom</label><input name="name" required value="<?= htmlspecialchars($edit['name'] ?? '') ?>" /></div>

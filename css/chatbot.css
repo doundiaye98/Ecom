@@ -221,9 +221,40 @@
   opacity: 0.85;
 }
 
+.payment-mode-banner {
+  margin: 0 0 1.25rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.payment-mode-banner.is-sandbox {
+  background: rgba(201, 162, 39, 0.12);
+  border: 1px solid rgba(201, 162, 39, 0.35);
+  color: #5c4a00;
+}
+
+.payment-mode-banner.is-production {
+  background: rgba(0, 68, 27, 0.08);
+  border: 1px solid rgba(0, 68, 27, 0.2);
+  color: #00441b;
+}
+
+.payment-mode-banner code {
+  font-size: 0.8em;
+  background: rgba(0, 0, 0, 0.06);
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+}
+
 @media (max-width: 480px) {
   .pev-chat__panel {
     width: calc(100vw - 1.5rem);
     height: min(70vh, 480px);
   }
+}
+
+body.pev-consent-banner-visible .pev-chat {
+  bottom: calc(7.5rem + env(safe-area-inset-bottom));
 }

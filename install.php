@@ -12,6 +12,15 @@ $error = '';
 $success = '';
 $installed = is_file(__DIR__ . '/config/database.php');
 
+if ($installed && $_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/includes/Env.php';
+    Env::load();
+    if (!Env::bool('INSTALL_ALLOW_REINSTALL', false)) {
+        http_response_code(403);
+        exit('Installation déjà effectuée. Supprimez config/database.php ou définissez INSTALL_ALLOW_REINSTALL=true dans .env pour réinstaller.');
+    }
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step === 'install') {
     $host = trim($_POST['host'] ?? '127.0.0.1');
     $port = (int) ($_POST['port'] ?? 3306);
@@ -146,7 +155,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step === 'install') {
 
     <?php if ($installed): ?>
     <div class="links">
-      <a class="btn" href="index.html">Voir la boutique</a>
+      <a class="btn" href="index.php">Voir la boutique</a>
       <a class="btn" href="admin/">Panneau admin</a>
     </div>
     <?php endif; ?>

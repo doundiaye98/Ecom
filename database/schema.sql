@@ -22,6 +22,22 @@ CREATE TABLE IF NOT EXISTS products (
     INDEX idx_sort (sort_order)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS customers (
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    phone_norm VARCHAR(20) NOT NULL,
+    phone_display VARCHAR(50) NOT NULL,
+    email VARCHAR(255) DEFAULT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    name VARCHAR(255) NOT NULL DEFAULT '',
+    address TEXT DEFAULT NULL,
+    city VARCHAR(100) DEFAULT NULL,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_customer_phone (phone_norm),
+    UNIQUE KEY uk_customer_email (email),
+    INDEX idx_customer_created (created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS orders (
     id VARCHAR(40) NOT NULL PRIMARY KEY,
     tracking_number VARCHAR(20) NOT NULL,
@@ -36,6 +52,7 @@ CREATE TABLE IF NOT EXISTS orders (
     customer_address TEXT NOT NULL,
     customer_city VARCHAR(100) NOT NULL,
     customer_notes TEXT DEFAULT NULL,
+    customer_id INT UNSIGNED DEFAULT NULL,
     payment_method VARCHAR(20) NOT NULL DEFAULT 'card',
     payment_paid TINYINT(1) NOT NULL DEFAULT 0,
     payment_reference VARCHAR(50) DEFAULT NULL,
@@ -46,10 +63,13 @@ CREATE TABLE IF NOT EXISTS orders (
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY uk_tracking (tracking_number),
+    INDEX idx_payment_ref (payment_reference),
     INDEX idx_status (status),
     INDEX idx_phone (customer_phone),
     INDEX idx_email (customer_email),
-    INDEX idx_created (created_at)
+    INDEX idx_customer (customer_id),
+    INDEX idx_created (created_at),
+    CONSTRAINT fk_orders_customer FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS order_items (

@@ -6,6 +6,7 @@ require_once dirname(__DIR__) . '/includes/ContactRepository.php';
 admin_require_login();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    admin_verify_csrf_post();
     $id = (int) ($_POST['id'] ?? 0);
     if ($id > 0) {
         ContactRepository::markRead($id);
@@ -34,6 +35,7 @@ ob_start();
       <p><?= nl2br(htmlspecialchars($msg['message'])) ?></p>
       <?php if (!$msg['is_read']): ?>
         <form method="post" style="margin-top:.75rem">
+          <?= Csrf::field() ?>
           <input type="hidden" name="id" value="<?= (int)$msg['id'] ?>" />
           <button class="btn btn--ghost btn--sm" type="submit">Marquer comme lu</button>
         </form>

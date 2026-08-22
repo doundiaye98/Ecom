@@ -7,11 +7,17 @@ const PEV = (() => {
   const ORDERS_API = "api/orders.php";
   const SETTINGS_API = "api/settings.php";
   const AUTH_API = "api/auth.php";
+  const CUSTOMER_API = "api/customer.php";
   const PAYMENTS_API = "api/payments.php";
 
   let SHIPPING_FEE = 2000;
   let FREE_SHIPPING_FROM = 50000;
   let SITE_SETTINGS = {};
+  let csrfToken = null;
+
+  function setCsrfToken(token) {
+    csrfToken = token || null;
+  }
 
   const STATUS_FLOW = [
     "pending_payment",
@@ -112,27 +118,72 @@ const PEV = (() => {
     localStorage.setItem(ORDERS_LOCAL_KEY, JSON.stringify(orders));
   }
 
-  async function api(url, action, payload = {}, method = "GET", useCredentials = false) {
-    const endpoint = new URL(url, window.location.href);
-    if (method === "GET") {
-      endpoint.searchParams.set("action", action);
-      Object.entries(payload).forEach(([k, v]) => {
-        if (v != null && v !== "") endpoint.searchParams.set(k, v);
-      });
-      const res = await fetch(endpoint.toString(), {
-        headers: { Accept: "application/json" },
-        credentials: useCredentials ? "same-origin" : "same-origin",
-      });
-      return res.json();
+  async function api(url, action, payload = {}, method = "GET", useCredentials = false, retries = 3) {
+    let lastError = null;
+    for (let attempt = 0; attempt < retries; attempt++) {
+      try {
+        const endpoint = new URL(url, window.location.href);
+        if (method === "GET") {
+          endpoint.searchParams.set("action", action);
+          Object.entries(payload).forEach(([k, v]) => {
+            if (v != null && v !== "") endpoint.searchParams.set(k, v);
+          });
+          const res = await fetch(endpoint.toString(), {
+            headers: { Accept: "application/json" },
+            credentials: useCredentials ? "same-origin" : "same-origin",
+          });
+          if (res.status === 429) {
+            await new Promise((r) => setTimeout(r, 1500 * (attempt + 1)));
+            continue;
+          }
+          if (res.status >= 500 && attempt < retries - 1) {
+            await new Promise((r) => setTimeout(r, 800 * (attempt + 1)));
+            continue;
+          }
+          return res.json();
+        }
+        endpoint.searchParams.set("action", action);
+        const headers = { "Content-Type": "application/json", Accept: "application/json" };
+        if (useCredentials && csrfToken) {
+          headers["X-CSRF-Token"] = csrfToken;
+        }
+        const body = { action, ...payload };
+        if (useCredentials && csrfToken) {
+          body._csrf = csrfToken;
+        }
+        const res = await fetch(endpoint.toString(), {
+          method: "POST",
+          headers,
+          credentials: useCredentials ? "same-origin" : "same-origin",
+          body: JSON.stringify(body),
+        });
+        if (res.status === 429) {
+          await new Promise((r) => setTimeout(r, 1500 * (attempt + 1)));
+          continue;
+        }
+        if (res.status >= 500 && attempt < retries - 1) {
+          await new Promise((r) => setTimeout(r, 800 * (attempt + 1)));
+          continue;
+        }
+        return res.json();
+      } catch (err) {
+        lastError = err;
+        if (attempt < retries - 1) {
+          await new Promise((r) => setTimeout(r, 800 * (attempt + 1)));
+        }
+      }
     }
-    endpoint.searchParams.set("action", action);
-    const res = await fetch(endpoint.toString(), {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Accept: "application/json" },
-      credentials: useCredentials ? "same-origin" : "same-origin",
-      body: JSON.stringify({ action, ...payload }),
-    });
-    return res.json();
+    throw lastError || new Error("Connexion au serveur impossible");
+  }
+
+  function isNetworkError(err) {
+    const msg = String(err?.message || err || "");
+    return (
+      err instanceof TypeError ||
+      msg.includes("Failed to fetch") ||
+      msg.includes("NetworkError") ||
+      msg.includes("Load failed")
+    );
   }
 
   async function createOrder(orderData) {
@@ -153,8 +204,9 @@ const PEV = (() => {
       if (result && result.error) {
         throw new Error(result.error);
       }
+      throw new Error("Réponse serveur invalide");
     } catch (err) {
-      if (err.message && !String(err.message).includes("Failed")) {
+      if (!isNetworkError(err)) {
         throw err;
       }
       console.warn("API indisponible, sauvegarde locale", err);
@@ -231,33 +283,26 @@ const PEV = (() => {
 
   async function getOrder(id) {
     try {
-      const result = await api(ORDERS_API, "get", { id });
+      const result = await api(ORDERS_API, "get", { id }, "GET", true);
       if (result?.ok && result.order) return result.order;
-    } catch (_) {}
-    return loadLocalOrders().find((o) => o.id === id || o.trackingNumber === id) || null;
+      if (result?.error) throw new Error(result.error);
+    } catch (err) {
+      if (err.message && !String(err.message).includes("Failed")) throw err;
+    }
+    return null;
   }
 
-  async function searchOrders({ phone = "", email = "" } = {}) {
-    try {
-      const result = await api(ORDERS_API, "search", { phone, email });
-      if (result?.ok) return result.orders || [];
-    } catch (_) {}
-    const local = loadLocalOrders();
-    const p = phone.replace(/\D+/g, "");
-    const e = email.toLowerCase().trim();
-    return local.filter((o) => {
-      const op = String(o.customer?.phone || "").replace(/\D+/g, "");
-      const oe = String(o.customer?.email || "").toLowerCase();
-      return (p && (op.endsWith(p) || p.endsWith(op) || op === p)) || (e && oe === e);
-    });
+  async function searchOrders() {
+    return listOrders();
   }
 
   async function listOrders() {
     try {
-      const result = await api(ORDERS_API, "list");
+      const result = await api(ORDERS_API, "mine", {}, "GET", true);
       if (result?.ok) return result.orders || [];
+      if (result?.error && result.error.includes("Connexion")) return [];
     } catch (_) {}
-    return loadLocalOrders();
+    return [];
   }
 
   async function updateStatus(id, status, note = "") {
@@ -301,7 +346,7 @@ const PEV = (() => {
 
   async function confirmDelivery(id, phone = "") {
     try {
-      const result = await api(ORDERS_API, "confirm_delivery", { id, phone }, "POST");
+      const result = await api(ORDERS_API, "confirm_delivery", { id, phone }, "POST", true);
       if (result?.ok && result.order) {
         syncLocal(result.order);
         return result.order;
@@ -310,12 +355,7 @@ const PEV = (() => {
     } catch (err) {
       if (err.message && !String(err.message).includes("Failed")) throw err;
     }
-    const order = await getOrder(id);
-    if (!order) throw new Error("Commande introuvable");
-    if (!["delivered", "out_for_delivery", "in_transit"].includes(order.status)) {
-      throw new Error("La commande n'est pas encore en livraison / livrée");
-    }
-    return updateStatusLocal(id, "completed", "Le client a confirmé la réception de la commande");
+    throw new Error("Connexion requise ou commande introuvable");
   }
 
   function syncLocal(order) {
@@ -332,15 +372,49 @@ const PEV = (() => {
   }
 
   async function adminLogin(username, password) {
-    return api(AUTH_API, "login", { username, password }, "POST", true);
+    const result = await api(AUTH_API, "login", { username, password }, "POST", true);
+    if (result?.csrfToken) setCsrfToken(result.csrfToken);
+    return result;
   }
 
   async function adminLogout() {
-    return api(AUTH_API, "logout", {}, "POST", true);
+    const result = await api(AUTH_API, "logout", {}, "POST", true);
+    setCsrfToken(null);
+    return result;
   }
 
   async function checkAdmin() {
-    return api(AUTH_API, "check", {}, "GET", true);
+    const result = await api(AUTH_API, "check", {}, "GET", true);
+    if (result?.csrfToken) setCsrfToken(result.csrfToken);
+    return result;
+  }
+
+  async function customerRegister(payload) {
+    const result = await api(CUSTOMER_API, "register", payload, "POST", true);
+    if (result?.csrfToken) setCsrfToken(result.csrfToken);
+    return result;
+  }
+
+  async function customerLogin(phone, password) {
+    const result = await api(CUSTOMER_API, "login", { phone, password }, "POST", true);
+    if (result?.csrfToken) setCsrfToken(result.csrfToken);
+    return result;
+  }
+
+  async function customerLogout() {
+    const result = await api(CUSTOMER_API, "logout", {}, "POST", true);
+    setCsrfToken(null);
+    return result;
+  }
+
+  async function customerCheck() {
+    const result = await api(CUSTOMER_API, "check", {}, "GET", true);
+    if (result?.csrfToken) setCsrfToken(result.csrfToken);
+    return result;
+  }
+
+  async function customerUpdateProfile(payload) {
+    return api(CUSTOMER_API, "profile", payload, "POST", true);
   }
 
   function simulatePayment(method) {
@@ -426,5 +500,10 @@ const PEV = (() => {
     adminLogin,
     adminLogout,
     checkAdmin,
+    customerRegister,
+    customerLogin,
+    customerLogout,
+    customerCheck,
+    customerUpdateProfile,
   };
 })();

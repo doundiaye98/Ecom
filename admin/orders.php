@@ -17,6 +17,7 @@ $nextMap = [
 ];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    admin_verify_csrf_post();
     $id = trim($_POST['id'] ?? '');
     $status = trim($_POST['status'] ?? '');
     $note = trim($_POST['note'] ?? '');
@@ -54,12 +55,13 @@ ob_start();
     </ul>
     <?php $next = $nextMap[$selected['status']] ?? null; if ($next): ?>
       <form method="post" style="margin-top:1rem">
+        <?= Csrf::field() ?>
         <input type="hidden" name="id" value="<?= htmlspecialchars($selected['id']) ?>" />
         <input type="hidden" name="status" value="<?= htmlspecialchars($next) ?>" />
         <button class="btn btn--gold btn--sm" type="submit">Passer à : <?= htmlspecialchars($labels[$next]) ?></button>
       </form>
     <?php endif; ?>
-    <a class="btn btn--ghost btn--sm" href="../suivi.html?id=<?= urlencode($selected['id']) ?>" target="_blank">Voir suivi client</a>
+    <a class="btn btn--ghost btn--sm" href="../espace-client.php?view=order&id=<?= urlencode($selected['id']) ?>" target="_blank">Voir suivi client</a>
   </div>
 <?php endif; ?>
 
@@ -78,6 +80,7 @@ ob_start();
           <td>
             <?php $next = $nextMap[$order['status']] ?? null; if ($next): ?>
               <form method="post">
+                <?= Csrf::field() ?>
                 <input type="hidden" name="id" value="<?= htmlspecialchars($order['id']) ?>" />
                 <input type="hidden" name="status" value="<?= htmlspecialchars($next) ?>" />
                 <button class="btn btn--gold btn--sm" type="submit">→ <?= htmlspecialchars($labels[$next]) ?></button>

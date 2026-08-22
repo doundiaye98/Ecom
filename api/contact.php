@@ -15,6 +15,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     respond(['ok' => false, 'error' => 'POST requis'], 405);
 }
 
+RateLimiter::enforce('contact_send', Env::int('RATE_LIMIT_CONTACT', 8), 300);
+
 $name = trim((string) ($input['name'] ?? ''));
 $email = trim((string) ($input['email'] ?? ''));
 $message = trim((string) ($input['message'] ?? ''));

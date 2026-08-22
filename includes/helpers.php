@@ -11,6 +11,30 @@ function app_config(): array
     return $config;
 }
 
+function is_debug_mode(): bool
+{
+    if (class_exists('Env', false)) {
+        Env::load();
+        $env = strtolower((string) (Env::get('APP_ENV', 'local') ?? 'local'));
+        if (in_array($env, ['local', 'dev', 'development'], true)) {
+            return Env::bool('APP_DEBUG', true);
+        }
+        return Env::bool('APP_DEBUG', false);
+    }
+    return false;
+}
+
+function safe_error_message(string $message, string $fallback = 'Une erreur est survenue. Réessayez.'): string
+{
+    if (is_debug_mode()) {
+        return $message;
+    }
+    if ($message === '' || str_contains($message, 'SQLSTATE') || str_contains($message, 'PDO')) {
+        return $fallback;
+    }
+    return $message;
+}
+
 function db_config(): array
 {
     static $config = null;

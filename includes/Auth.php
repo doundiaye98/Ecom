@@ -12,10 +12,13 @@ final class Auth
 
         $app = app_config();
         session_name($app['session_name'] ?? 'PEV_SESSION');
+        $secure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
         session_set_cookie_params([
             'lifetime' => (int) ($app['session_lifetime'] ?? 86400),
             'path' => '/',
             'httponly' => true,
+            'secure' => $secure,
             'samesite' => 'Lax',
         ]);
         session_start();
@@ -37,6 +40,9 @@ final class Auth
         $_SESSION['admin_id'] = (int) $user['id'];
         $_SESSION['admin_username'] = $user['username'];
         $_SESSION['admin_logged_in'] = true;
+
+        require_once __DIR__ . '/Csrf.php';
+        Csrf::regenerate();
 
         return true;
     }

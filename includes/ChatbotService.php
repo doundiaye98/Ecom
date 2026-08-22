@@ -44,7 +44,7 @@ final class ChatbotService
                 'quickReplies' => ['products', 'payment_wave', 'track', 'whatsapp'],
             ],
             'products' => [
-                'text' => "Découvrez notre collection de compléments premium : beauté, énergie, homme, femme et enfants.\n\nConsultez la boutique : index.html#produits",
+                'text' => "Découvrez notre collection de compléments premium : beauté, énergie, homme, femme et enfants.\n\nConsultez la boutique : index.php#produits",
                 'quickReplies' => ['payment_wave', 'delivery', 'whatsapp'],
             ],
             'payment_wave' => [
@@ -60,7 +60,7 @@ final class ChatbotService
                 'quickReplies' => ['payment_wave', 'payment_orange', 'delivery'],
             ],
             'track' => [
-                'text' => "Pour suivre votre commande :\n1. Allez sur Suivi commande\n2. Entrez votre N° de commande ou numéro de suivi\n3. Statut en temps réel\n\n→ suivi.html",
+                'text' => "Pour suivre votre commande :\n1. Ouvrez votre espace client\n2. Entrez votre N° de commande ou numéro de suivi\n3. Consultez le statut en temps réel\n\n→ espace-client.php?view=track",
                 'quickReplies' => ['products', 'whatsapp', 'delivery'],
             ],
             'delivery' => [

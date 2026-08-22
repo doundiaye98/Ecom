@@ -10,6 +10,7 @@ $action = api_action($input);
 try {
     switch ($action) {
         case 'list':
+            Auth::requireAdmin();
             respond(['ok' => true, 'orders' => OrderRepository::listAll()]);
 
         case 'get':
@@ -21,14 +22,29 @@ try {
             if (!$order) {
                 respond(['ok' => false, 'error' => 'Commande introuvable'], 404);
             }
+            if (!Auth::check()) {
+                require_once dirname(__DIR__) . '/includes/CustomerAuth.php';
+                CustomerAuth::requireCustomer();
+                if (!OrderRepository::belongsToCustomer($id, CustomerAuth::id() ?? 0)) {
+                    respond(['ok' => false, 'error' => 'Accès refusé à cette commande'], 403);
+                }
+            }
             respond(['ok' => true, 'order' => $order]);
 
-        case 'search':
-            $phone = (string) ($input['phone'] ?? '');
-            $email = (string) ($input['email'] ?? '');
+        case 'mine':
+            require_once dirname(__DIR__) . '/includes/CustomerAuth.php';
+            CustomerAuth::requireCustomer();
             respond([
                 'ok' => true,
-                'orders' => OrderRepository::search($phone, $email),
+                'orders' => OrderRepository::listForCustomer(CustomerAuth::id() ?? 0),
+            ]);
+
+        case 'search':
+            require_once dirname(__DIR__) . '/includes/CustomerAuth.php';
+            CustomerAuth::requireCustomer();
+            respond([
+                'ok' => true,
+                'orders' => OrderRepository::listForCustomer(CustomerAuth::id() ?? 0),
             ]);
 
         case 'create':
@@ -47,14 +63,7 @@ try {
                 respond(['ok' => false, 'error' => 'POST requis'], 405);
             }
 
-            // Session admin OU clé legacy (migration)
-            $legacyKey = (string) ($input['adminKey'] ?? '');
-            $app = app_config();
-            $legacyOk = $legacyKey !== '' && $legacyKey === ($app['default_admin']['password'] ?? '');
-
-            if (!Auth::check() && !$legacyOk) {
-                respond(['ok' => false, 'error' => 'Accès admin refusé'], 403);
-            }
+            api_require_admin_csrf($input);
 
             $id = trim((string) ($input['id'] ?? ''));
             $newStatus = trim((string) ($input['status'] ?? ''));
@@ -75,10 +84,16 @@ try {
             if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                 respond(['ok' => false, 'error' => 'POST requis'], 405);
             }
+            require_once dirname(__DIR__) . '/includes/CustomerAuth.php';
+            CustomerAuth::requireCustomer();
+
             $id = trim((string) ($input['id'] ?? ''));
             $phone = (string) ($input['phone'] ?? '');
             if ($id === '') {
                 respond(['ok' => false, 'error' => 'ID manquant'], 400);
+            }
+            if (!OrderRepository::belongsToCustomer($id, CustomerAuth::id() ?? 0)) {
+                respond(['ok' => false, 'error' => 'Accès refusé à cette commande'], 403);
             }
             try {
                 $order = OrderRepository::confirmDelivery($id, $phone);
@@ -98,5 +113,6 @@ try {
             respond(['ok' => false, 'error' => 'Action inconnue'], 400);
     }
 } catch (Throwable $e) {
-    respond(['ok' => false, 'error' => $e->getMessage()], 500);
+    ErrorHandler::log('API', $e->getMessage(), $e->getFile(), $e->getLine());
+    respond(['ok' => false, 'error' => safe_error_message($e->getMessage())], 500);
 }

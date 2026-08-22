@@ -1,6 +1,6 @@
-DirectoryIndex index.html index.php
+DirectoryIndex index.php
 Options -Indexes
 
-<FilesMatch "^(\.env|database\.example\.php)$">
+<FilesMatch "^(\.env|database\.example\.php|database\.php)$">
   Require all denied
 </FilesMatch>

@@ -124,11 +124,34 @@ final class ProductRepository
         return $stmt->rowCount() > 0;
     }
 
-    public static function decrementStock(string $id, int $qty): void
+    public static function decrementStock(string $id, int $qty, ?PDO $pdo = null): void
     {
-        $stmt = Database::pdo()->prepare(
-            'UPDATE products SET stock = GREATEST(0, stock - ?) WHERE id = ?'
+        self::reserveStock($id, $qty, $pdo);
+    }
+
+    /** Décrémente le stock uniquement si la quantité est disponible (concurrence sûre). */
+    public static function reserveStock(string $id, int $qty, ?PDO $pdo = null): void
+    {
+        if ($qty < 1) {
+            throw new InvalidArgumentException('Quantité invalide');
+        }
+        $db = $pdo ?? Database::pdo();
+        $stmt = $db->prepare(
+            'UPDATE products SET stock = stock - ? WHERE id = ? AND is_active = 1 AND stock >= ?'
         );
-        $stmt->execute([$qty, $id]);
+        $stmt->execute([$qty, $id, $qty]);
+        if ($stmt->rowCount() === 0) {
+            throw new InvalidArgumentException('Stock insuffisant ou produit indisponible');
+        }
+    }
+
+    public static function lockForUpdate(string $id, PDO $pdo): ?array
+    {
+        $stmt = $pdo->prepare(
+            'SELECT * FROM products WHERE id = ? AND is_active = 1 FOR UPDATE'
+        );
+        $stmt->execute([$id]);
+        $row = $stmt->fetch();
+        return $row ? format_product_row($row) : null;
     }
 }

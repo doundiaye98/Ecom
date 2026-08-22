@@ -50,23 +50,94 @@ final class OrderRepository
         return $orders;
     }
 
+    public static function listForCustomer(int $customerId): array
+    {
+        $stmt = Database::pdo()->prepare(
+            'SELECT * FROM orders WHERE customer_id = ? ORDER BY created_at DESC LIMIT 100'
+        );
+        $stmt->execute([$customerId]);
+        $orders = [];
+        foreach ($stmt->fetchAll() as $order) {
+            $orders[] = format_order_row(
+                $order,
+                self::fetchItems($order['id']),
+                self::fetchTimeline($order['id'])
+            );
+        }
+        return $orders;
+    }
+
+    public static function belongsToCustomer(string $idOrTracking, int $customerId): bool
+    {
+        $stmt = Database::pdo()->prepare(
+            'SELECT customer_id, customer_phone FROM orders WHERE id = ? OR tracking_number = ? LIMIT 1'
+        );
+        $stmt->execute([$idOrTracking, $idOrTracking]);
+        $order = $stmt->fetch();
+        if (!$order) {
+            return false;
+        }
+        if (!empty($order['customer_id']) && (int) $order['customer_id'] === $customerId) {
+            return true;
+        }
+
+        require_once __DIR__ . '/CustomerRepository.php';
+        $customer = CustomerRepository::findById($customerId);
+        if (!$customer) {
+            return false;
+        }
+        $orderPhone = normalize_phone_sn((string) $order['customer_phone']);
+        return $orderPhone !== '' && $orderPhone === $customer['phoneNorm'];
+    }
+
     public static function search(string $phone, string $email): array
     {
-        $orders = self::listAll();
-        $phoneNorm = normalize_phone($phone);
+        $phoneNorm = normalize_phone_sn($phone);
         $emailNorm = strtolower(trim($email));
 
-        return array_values(array_filter($orders, static function (array $order) use ($phoneNorm, $emailNorm): bool {
-            $oPhone = normalize_phone($order['customer']['phone'] ?? '');
-            $oEmail = strtolower($order['customer']['email'] ?? '');
-            $matchPhone = $phoneNorm !== '' && $oPhone !== '' && (
-                ends_with($oPhone, $phoneNorm) ||
-                ends_with($phoneNorm, $oPhone) ||
-                $oPhone === $phoneNorm
+        if ($phoneNorm === '' && $emailNorm === '') {
+            return [];
+        }
+
+        $pdo = Database::pdo();
+        if ($emailNorm !== '') {
+            $stmt = $pdo->prepare(
+                'SELECT * FROM orders WHERE LOWER(customer_email) = ? ORDER BY created_at DESC LIMIT 50'
             );
-            $matchEmail = $emailNorm !== '' && $oEmail === $emailNorm;
-            return $matchPhone || $matchEmail;
-        }));
+            $stmt->execute([$emailNorm]);
+        } else {
+            $suffix = strlen($phoneNorm) >= 9 ? substr($phoneNorm, -9) : $phoneNorm;
+            $stmt = $pdo->prepare(
+                'SELECT * FROM orders
+                 WHERE REPLACE(REPLACE(REPLACE(customer_phone, " ", ""), "+", ""), "-", "") LIKE ?
+                 ORDER BY created_at DESC LIMIT 50'
+            );
+            $stmt->execute(['%' . $suffix]);
+        }
+
+        $orders = [];
+        foreach ($stmt->fetchAll() as $order) {
+            $orders[] = format_order_row(
+                $order,
+                self::fetchItems($order['id']),
+                self::fetchTimeline($order['id'])
+            );
+        }
+        return $orders;
+    }
+
+    public static function findByPaymentReference(string $reference): ?array
+    {
+        $reference = trim($reference);
+        if ($reference === '') {
+            return null;
+        }
+        $stmt = Database::pdo()->prepare(
+            'SELECT id FROM orders WHERE payment_reference = ? LIMIT 1'
+        );
+        $stmt->execute([$reference]);
+        $row = $stmt->fetch();
+        return $row ? self::findFormatted((string) $row['id']) : null;
     }
 
     public static function create(array $input): array
@@ -105,63 +176,90 @@ final class OrderRepository
             throw new InvalidArgumentException('Un ou plusieurs produits sont introuvables');
         }
 
-        $cleanItems = [];
-        $subtotal = 0;
-        foreach ($qtyMap as $id => $qty) {
-            $product = $products[$id];
-            if ($product['stock'] < $qty) {
-                throw new InvalidArgumentException('Stock insuffisant pour : ' . $product['name']);
+        $reference = (string) ($payment['reference'] ?? ('PAY-' . strtoupper(substr(bin2hex(random_bytes(4)), 0, 8))));
+        if ($reference !== '') {
+            $existing = self::findByPaymentReference($reference);
+            if ($existing) {
+                return $existing;
             }
-            $lineTotal = $product['price'] * $qty;
-            $subtotal += $lineTotal;
-            $cleanItems[] = [
-                'id' => $product['id'],
-                'name' => $product['name'],
-                'price' => $product['price'],
-                'qty' => $qty,
-                'image' => $product['image'],
-            ];
         }
 
         $shippingFee = SettingsRepository::getInt('shipping_fee', 2000);
         $freeFrom = SettingsRepository::getInt('free_shipping_from', 50000);
-        if ($subtotal >= $freeFrom) {
-            $shippingFee = 0;
-        }
 
-        $total = $subtotal + $shippingFee;
         $method = (string) ($payment['method'] ?? 'cod');
         $paid = !empty($payment['paid']);
-        $status = match (true) {
-            $method === 'cod' => 'processing',
-            $paid => 'paid',
-            default => 'pending_payment',
-        };
-        $now = gmdate('Y-m-d H:i:s');
-
         $orderId = generate_order_id();
         $tracking = generate_tracking();
-        $reference = (string) ($payment['reference'] ?? ('PAY-' . strtoupper(substr(bin2hex(random_bytes(4)), 0, 8))));
+        $now = gmdate('Y-m-d H:i:s');
 
-        $pdo = Database::pdo();
-        $pdo->beginTransaction();
+        $createdId = Database::transaction(static function (PDO $pdo) use (
+            $qtyMap,
+            $customer,
+            $shipping,
+            $shippingFee,
+            $freeFrom,
+            $method,
+            $paid,
+            $orderId,
+            $tracking,
+            $reference,
+            $now
+        ): string {
+            $cleanItems = [];
+            $subtotal = 0;
 
-        try {
+            foreach ($qtyMap as $id => $qty) {
+                $locked = ProductRepository::lockForUpdate($id, $pdo);
+                if (!$locked) {
+                    throw new InvalidArgumentException('Produit introuvable : ' . $id);
+                }
+                if ($locked['stock'] < $qty) {
+                    throw new InvalidArgumentException('Stock insuffisant pour : ' . $locked['name']);
+                }
+                $lineTotal = $locked['price'] * $qty;
+                $subtotal += $lineTotal;
+                $cleanItems[] = [
+                    'id' => $locked['id'],
+                    'name' => $locked['name'],
+                    'price' => $locked['price'],
+                    'qty' => $qty,
+                    'image' => $locked['image'],
+                ];
+            }
+
+            if ($subtotal >= $freeFrom) {
+                $fee = 0;
+            } else {
+                $fee = $shippingFee;
+            }
+            $total = $subtotal + $fee;
+
+            $status = match (true) {
+                $method === 'cod' => 'processing',
+                $paid => 'paid',
+                default => 'pending_payment',
+            };
+
             $stmt = $pdo->prepare(
                 'INSERT INTO orders (
                     id, tracking_number, status, subtotal, shipping_fee, total, currency,
                     customer_name, customer_phone, customer_email, customer_address, customer_city, customer_notes,
+                    customer_id,
                     payment_method, payment_paid, payment_reference, payment_paid_at,
                     shipping_carrier, shipping_estimated_days
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
             );
+
+            require_once __DIR__ . '/CustomerAuth.php';
+            $customerId = CustomerAuth::id();
 
             $stmt->execute([
                 $orderId,
                 $tracking,
                 $status,
                 $subtotal,
-                $shippingFee,
+                $fee,
                 $total,
                 'XOF',
                 trim((string) $customer['name']),
@@ -170,6 +268,7 @@ final class OrderRepository
                 trim((string) $customer['address']),
                 trim((string) $customer['city']),
                 trim((string) ($customer['notes'] ?? '')),
+                $customerId,
                 $method,
                 $paid ? 1 : 0,
                 $reference,
@@ -191,11 +290,11 @@ final class OrderRepository
                     $item['qty'],
                     $item['image'],
                 ]);
-                ProductRepository::decrementStock($item['id'], $item['qty']);
+                ProductRepository::reserveStock($item['id'], $item['qty'], $pdo);
             }
 
             $labels = order_status_labels();
-            self::addTimeline($orderId, 'pending_payment', $labels['pending_payment'], 'Commande créée', $now);
+            self::addTimeline($orderId, 'pending_payment', $labels['pending_payment'], 'Commande créée', $now, $pdo);
 
             if ($status === 'paid' || $status === 'processing') {
                 self::addTimeline(
@@ -205,21 +304,19 @@ final class OrderRepository
                     $method === 'cod'
                         ? 'Paiement à la livraison sélectionné'
                         : 'Paiement reçu via ' . strtoupper($method),
-                    $now
+                    $now,
+                    $pdo
                 );
             }
 
             if ($status === 'processing') {
-                self::addTimeline($orderId, 'processing', $labels['processing'], 'Commande en cours de préparation', $now);
+                self::addTimeline($orderId, 'processing', $labels['processing'], 'Commande en cours de préparation', $now, $pdo);
             }
 
-            $pdo->commit();
-        } catch (Throwable $e) {
-            $pdo->rollBack();
-            throw $e;
-        }
+            return $orderId;
+        });
 
-        return self::findFormatted($orderId) ?? [];
+        return self::findFormatted($createdId) ?? [];
     }
 
     public static function updateStatus(string $id, string $newStatus, string $note = ''): array
@@ -283,9 +380,10 @@ final class OrderRepository
         return self::updateStatus($id, 'completed', 'Le client a confirmé la réception de la commande');
     }
 
-    private static function addTimeline(string $orderId, string $status, string $label, string $note, string $at): void
+    private static function addTimeline(string $orderId, string $status, string $label, string $note, string $at, ?PDO $pdo = null): void
     {
-        $stmt = Database::pdo()->prepare(
+        $db = $pdo ?? Database::pdo();
+        $stmt = $db->prepare(
             'INSERT INTO order_timeline (order_id, status, label, note, created_at) VALUES (?, ?, ?, ?, ?)'
         );
         $stmt->execute([$orderId, $status, $label, $note, $at]);

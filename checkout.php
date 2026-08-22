@@ -1,3 +1,8 @@
+<?php
+declare(strict_types=1);
+require __DIR__ . '/includes/storefront.php';
+storefront_boot();
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -10,6 +15,7 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/checkout.css" />
   <link rel="stylesheet" href="css/chatbot.css" />
+  <link rel="stylesheet" href="css/consent.css" />
 </head>
 <body class="page-checkout">
   <div class="announcement">
@@ -18,7 +24,7 @@
 
   <header class="header is-scrolled">
     <div class="container header__inner header__inner--simple">
-      <a href="index.html" class="brand">
+      <a href="index.php" class="brand">
         <img src="logo/2608843d-81e3-494b-9808-d60e0ec10072.jpeg" alt="Pure Essence Vita" class="brand__logo" />
       </a>
       <nav class="checkout-steps" id="checkoutSteps" aria-label="Étapes">
@@ -26,7 +32,7 @@
         <span class="step" data-step="2">2. Paiement</span>
         <span class="step" data-step="3">3. Confirmation</span>
       </nav>
-      <a href="commandes.html" class="btn btn--ghost btn--sm">Mes commandes</a>
+      <a href="espace-client.php" class="btn btn--ghost btn--sm">Espace client</a>
     </div>
   </header>
 
@@ -138,8 +144,9 @@
               </div>
             </div>
             <div class="checkout-actions">
-              <a class="btn btn--gold" id="okTrackLink" href="suivi.html">Suivre ma commande</a>
-              <a class="btn btn--ghost" href="index.html">Retour à la boutique</a>
+              <a class="btn btn--gold" id="okTrackLink" href="espace-client.php">Suivre ma commande</a>
+              <a class="btn btn--ghost" href="espace-client.php">Créer mon espace client</a>
+              <a class="btn btn--ghost" href="index.php">Retour à la boutique</a>
             </div>
           </div>
         </div>
@@ -172,9 +179,11 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+  <script src="js/dom-safe.js"></script>
   <script src="js/products.js"></script>
   <script src="js/store.js"></script>
   <script src="js/checkout.js"></script>
+  <script src="js/consent.js"></script>
   <script src="js/chatbot.js"></script>
 </body>
 </html>

@@ -1,2 +1,4 @@
 .env
 config/database.php
+storage/logs/*.log
+storage/cache/rate_limit/

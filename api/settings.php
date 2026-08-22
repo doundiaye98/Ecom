@@ -23,7 +23,7 @@ switch ($action) {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             respond(['ok' => false, 'error' => 'POST requis'], 405);
         }
-        Auth::requireAdmin();
+        api_require_admin_csrf($input);
 
         $allowed = ['shipping_fee', 'free_shipping_from', 'site_name', 'whatsapp', 'contact_email'];
         foreach ($allowed as $key) {

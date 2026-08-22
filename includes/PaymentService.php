@@ -126,7 +126,7 @@ final class PaymentService
 
         $amount = (int) ($payload['amount'] ?? 0);
         $phone = normalize_phone_sn((string) ($payload['phone'] ?? ''));
-        $orderRef = trim((string) ($payload['orderRef'] ?? ('PEV-' . strtoupper(bin2hex(random_bytes(4)))));
+        $orderRef = trim((string) ($payload['orderRef'] ?? ('PEV-' . strtoupper(bin2hex(random_bytes(4))))));
 
         if ($amount < self::minAmount() || $amount > self::maxAmount()) {
             throw new InvalidArgumentException(
@@ -468,7 +468,7 @@ final class PaymentService
 
     private static function returnUrl(string $method, string $status, string $orderRef): string
     {
-        return self::appUrl() . '/checkout.html?' . http_build_query([
+        return self::appUrl() . '/checkout.php?' . http_build_query([
             'payment' => $method,
             'status' => $status,
             'ref' => $orderRef,

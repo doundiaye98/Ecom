@@ -27,9 +27,9 @@
             <li class="track-step ${done || active ? "is-done" : ""} ${active ? "is-active" : ""}">
               <div class="track-step__dot"></div>
               <div class="track-step__body">
-                <strong>${PEV.STATUS_LABELS[status]}</strong>
+                <strong>${escapeHtml(PEV.STATUS_LABELS[status])}</strong>
                 <span>${event ? PEV.formatDate(event.at) : i <= currentIdx ? "—" : "À venir"}</span>
-                ${event?.note ? `<p>${event.note}</p>` : ""}
+                ${event?.note ? `<p>${escapeHtml(event.note)}</p>` : ""}
               </div>
             </li>`;
           })
@@ -49,18 +49,18 @@
         <div class="track-card__head">
           <div>
             <p class="eyebrow">Commande</p>
-            <h2>${order.id}</h2>
-            <p class="muted">Suivi : <strong>${order.trackingNumber}</strong></p>
+            <h2>${escapeHtml(order.id)}</h2>
+            <p class="muted">Suivi : <strong>${escapeHtml(order.trackingNumber)}</strong></p>
           </div>
-          <div class="track-status-pill">${PEV.STATUS_LABELS[order.status] || order.status}</div>
+          <div class="track-status-pill">${escapeHtml(PEV.STATUS_LABELS[order.status] || order.status)}</div>
         </div>
 
         <div class="track-meta-grid">
-          <div><span>Client</span><strong>${order.customer?.name || "—"}</strong></div>
-          <div><span>Téléphone</span><strong>${order.customer?.phone || "—"}</strong></div>
-          <div><span>Adresse</span><strong>${order.customer?.address || ""}${order.customer?.city ? ", " + order.customer.city : ""}</strong></div>
-          <div><span>Paiement</span><strong>${payLabel}${order.payment?.paid ? " · Payé" : ""}</strong></div>
-          <div><span>Transporteur</span><strong>${order.shipping?.carrier || "Pure Essence Express"}</strong></div>
+          <div><span>Client</span><strong>${escapeHtml(order.customer?.name || "—")}</strong></div>
+          <div><span>Téléphone</span><strong>${escapeHtml(order.customer?.phone || "—")}</strong></div>
+          <div><span>Adresse</span><strong>${escapeHtml(order.customer?.address || "")}${order.customer?.city ? ", " + escapeHtml(order.customer.city) : ""}</strong></div>
+          <div><span>Paiement</span><strong>${escapeHtml(payLabel)}${order.payment?.paid ? " · Payé" : ""}</strong></div>
+          <div><span>Transporteur</span><strong>${escapeHtml(order.shipping?.carrier || "Pure Essence Express")}</strong></div>
           <div><span>Total</span><strong>${PEV.formatPrice(order.total)}</strong></div>
         </div>
 
@@ -75,7 +75,7 @@
             <div class="track-item">
               <img src="${encodeURI(i.image || "")}" alt="" />
               <div>
-                <strong>${i.name}</strong>
+                <strong>${escapeHtml(i.name)}</strong>
                 <span>${i.qty} × ${PEV.formatPrice(i.price)}</span>
               </div>
               <em>${PEV.formatPrice(i.price * i.qty)}</em>
@@ -95,7 +95,7 @@
               ? `<p class="success-inline">Livraison validée le ${PEV.formatDate(order.deliveryConfirmedAt || order.updatedAt)}</p>`
               : ""
           }
-          <a class="btn btn--ghost" href="commandes.html">Toutes mes commandes</a>
+          <a class="btn btn--ghost" href="commandes.php">Toutes mes commandes</a>
         </div>
       </div>`;
 
@@ -114,7 +114,7 @@
     const order = await PEV.getOrder(id.trim());
     if (!order) {
       $("#trackResult").hidden = false;
-      $("#trackResult").innerHTML = `<div class="track-card"><p>Aucune commande trouvée pour <strong>${id}</strong>.</p></div>`;
+      $("#trackResult").innerHTML = `<div class="track-card"><p>Aucune commande trouvée pour <strong>${escapeHtml(id)}</strong>.</p></div>`;
       return;
     }
     renderOrder(order);
@@ -128,7 +128,7 @@
       e.preventDefault();
       const q = $("#trackQuery").value.trim();
       if (!q) return toast("Entrez un N° de commande ou de suivi");
-      history.replaceState(null, "", `suivi.html?id=${encodeURIComponent(q)}`);
+      history.replaceState(null, "", `suivi.php?id=${encodeURIComponent(q)}`);
       lookup(q);
     });
 

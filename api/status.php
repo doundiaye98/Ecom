@@ -15,14 +15,17 @@ if (!$installed) {
 }
 
 require __DIR__ . '/bootstrap.php';
+require_once dirname(__DIR__) . '/includes/PaymentService.php';
 
 try {
     $productCount = ProductRepository::countActive();
+    $payment = PaymentService::deploymentCheck();
     echo json_encode([
         'ok' => true,
         'installed' => true,
         'products' => $productCount,
         'php' => PHP_VERSION,
+        'payments' => $payment,
     ], JSON_UNESCAPED_UNICODE);
 } catch (Throwable $e) {
     echo json_encode([
