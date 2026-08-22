@@ -4,10 +4,14 @@
 const PEV = (() => {
   const CART_KEY = "pev_cart_v1";
   const ORDERS_LOCAL_KEY = "pev_orders_v1";
-  const API_URL = "api/orders.php";
-  const ADMIN_KEY = "pev_admin_2026";
-  const SHIPPING_FEE = 2000;
-  const FREE_SHIPPING_FROM = 50000;
+  const ORDERS_API = "api/orders.php";
+  const SETTINGS_API = "api/settings.php";
+  const AUTH_API = "api/auth.php";
+  const PAYMENTS_API = "api/payments.php";
+
+  let SHIPPING_FEE = 2000;
+  let FREE_SHIPPING_FROM = 50000;
+  let SITE_SETTINGS = {};
 
   const STATUS_FLOW = [
     "pending_payment",
@@ -54,6 +58,28 @@ const PEV = (() => {
     }
   }
 
+  async function loadSettings() {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    try {
+      const res = await fetch(`${SETTINGS_API}?action=public`, {
+        headers: { Accept: "application/json" },
+        signal: controller.signal,
+      });
+      const data = await res.json();
+      if (data.ok && data.settings) {
+        SITE_SETTINGS = data.settings;
+        SHIPPING_FEE = Number(data.settings.shippingFee) || SHIPPING_FEE;
+        FREE_SHIPPING_FROM = Number(data.settings.freeShippingFrom) || FREE_SHIPPING_FROM;
+      }
+    } catch (err) {
+      console.warn("Paramètres indisponibles, valeurs par défaut.", err);
+    } finally {
+      clearTimeout(timeoutId);
+    }
+    return SITE_SETTINGS;
+  }
+
   function loadCart() {
     try {
       return JSON.parse(localStorage.getItem(CART_KEY)) || [];
@@ -86,45 +112,51 @@ const PEV = (() => {
     localStorage.setItem(ORDERS_LOCAL_KEY, JSON.stringify(orders));
   }
 
-  function genId() {
-    const t = Date.now().toString(36).toUpperCase();
-    const r = Math.random().toString(36).slice(2, 8).toUpperCase();
-    return `PEV-${t}-${r}`;
-  }
-
-  function genTracking() {
-    return "TRK" + Math.random().toString(36).slice(2, 12).toUpperCase();
-  }
-
-  async function api(action, payload = {}, method = "GET") {
-    const url = new URL(API_URL, window.location.href);
+  async function api(url, action, payload = {}, method = "GET", useCredentials = false) {
+    const endpoint = new URL(url, window.location.href);
     if (method === "GET") {
-      url.searchParams.set("action", action);
+      endpoint.searchParams.set("action", action);
       Object.entries(payload).forEach(([k, v]) => {
-        if (v != null && v !== "") url.searchParams.set(k, v);
+        if (v != null && v !== "") endpoint.searchParams.set(k, v);
       });
-      const res = await fetch(url.toString(), { headers: { Accept: "application/json" } });
+      const res = await fetch(endpoint.toString(), {
+        headers: { Accept: "application/json" },
+        credentials: useCredentials ? "same-origin" : "same-origin",
+      });
       return res.json();
     }
-    url.searchParams.set("action", action);
-    const res = await fetch(url.toString(), {
+    endpoint.searchParams.set("action", action);
+    const res = await fetch(endpoint.toString(), {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
+      credentials: useCredentials ? "same-origin" : "same-origin",
       body: JSON.stringify({ action, ...payload }),
     });
     return res.json();
   }
 
   async function createOrder(orderData) {
+    const payload = {
+      ...orderData,
+      items: (orderData.items || []).map((item) => ({
+        id: item.id,
+        qty: item.qty,
+      })),
+    };
+
     try {
-      const result = await api("create", orderData, "POST");
+      const result = await api(ORDERS_API, "create", payload, "POST");
       if (result && result.ok && result.order) {
-        const local = loadLocalOrders();
-        local.unshift(result.order);
-        saveLocalOrders(local.slice(0, 50));
+        syncLocal(result.order);
         return result.order;
       }
+      if (result && result.error) {
+        throw new Error(result.error);
+      }
     } catch (err) {
+      if (err.message && !String(err.message).includes("Failed")) {
+        throw err;
+      }
       console.warn("API indisponible, sauvegarde locale", err);
     }
     return createOrderLocal(orderData);
@@ -165,8 +197,8 @@ const PEV = (() => {
     }
 
     const order = {
-      id: genId(),
-      trackingNumber: genTracking(),
+      id: "PEV-LOCAL-" + Date.now().toString(36).toUpperCase(),
+      trackingNumber: "TRK" + Math.random().toString(36).slice(2, 12).toUpperCase(),
       createdAt: now,
       updatedAt: now,
       status,
@@ -199,7 +231,7 @@ const PEV = (() => {
 
   async function getOrder(id) {
     try {
-      const result = await api("get", { id });
+      const result = await api(ORDERS_API, "get", { id });
       if (result?.ok && result.order) return result.order;
     } catch (_) {}
     return loadLocalOrders().find((o) => o.id === id || o.trackingNumber === id) || null;
@@ -207,7 +239,7 @@ const PEV = (() => {
 
   async function searchOrders({ phone = "", email = "" } = {}) {
     try {
-      const result = await api("search", { phone, email });
+      const result = await api(ORDERS_API, "search", { phone, email });
       if (result?.ok) return result.orders || [];
     } catch (_) {}
     const local = loadLocalOrders();
@@ -222,7 +254,7 @@ const PEV = (() => {
 
   async function listOrders() {
     try {
-      const result = await api("list");
+      const result = await api(ORDERS_API, "list");
       if (result?.ok) return result.orders || [];
     } catch (_) {}
     return loadLocalOrders();
@@ -230,12 +262,15 @@ const PEV = (() => {
 
   async function updateStatus(id, status, note = "") {
     try {
-      const result = await api("update_status", { id, status, note, adminKey: ADMIN_KEY }, "POST");
+      const result = await api(ORDERS_API, "update_status", { id, status, note }, "POST", true);
       if (result?.ok && result.order) {
         syncLocal(result.order);
         return result.order;
       }
-    } catch (_) {}
+      if (result?.error) throw new Error(result.error);
+    } catch (err) {
+      if (err.message && !String(err.message).includes("Failed")) throw err;
+    }
     return updateStatusLocal(id, status, note);
   }
 
@@ -266,7 +301,7 @@ const PEV = (() => {
 
   async function confirmDelivery(id, phone = "") {
     try {
-      const result = await api("confirm_delivery", { id, phone }, "POST");
+      const result = await api(ORDERS_API, "confirm_delivery", { id, phone }, "POST");
       if (result?.ok && result.order) {
         syncLocal(result.order);
         return result.order;
@@ -288,7 +323,7 @@ const PEV = (() => {
     const idx = orders.findIndex((o) => o.id === order.id);
     if (idx >= 0) orders[idx] = order;
     else orders.unshift(order);
-    saveLocalOrders(orders);
+    saveLocalOrders(orders.slice(0, 50));
   }
 
   function statusIndex(status) {
@@ -296,33 +331,82 @@ const PEV = (() => {
     return i < 0 ? 0 : i;
   }
 
+  async function adminLogin(username, password) {
+    return api(AUTH_API, "login", { username, password }, "POST", true);
+  }
+
+  async function adminLogout() {
+    return api(AUTH_API, "logout", {}, "POST", true);
+  }
+
+  async function checkAdmin() {
+    return api(AUTH_API, "check", {}, "GET", true);
+  }
+
   function simulatePayment(method) {
-    return new Promise((resolve, reject) => {
-      const delay = 1600 + Math.random() * 1200;
-      setTimeout(() => {
-        if (Math.random() < 0.04) {
-          reject(new Error("Paiement refusé. Veuillez réessayer ou choisir un autre moyen."));
-          return;
-        }
-        resolve({
-          paid: true,
-          method,
-          reference: "PAY-" + Math.random().toString(36).slice(2, 10).toUpperCase(),
-        });
-      }, delay);
+    return processPayment({ method, amount: 1, phone: "221770000000", customerName: "Test" });
+  }
+
+  async function processPayment({ method, amount, phone = "", customerName = "", orderRef = "" }) {
+    const payload = { method, amount, phone, customerName, orderRef };
+    const res = await fetch(`${PAYMENTS_API}?action=initiate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify(payload),
     });
+    const data = await res.json();
+    if (!data.ok) {
+      throw new Error(data.error || "Paiement échoué");
+    }
+    return data.payment;
+  }
+
+  async function verifyPayment(method, reference) {
+    const res = await fetch(
+      `${PAYMENTS_API}?action=verify&method=${encodeURIComponent(method)}&reference=${encodeURIComponent(reference)}`,
+      { headers: { Accept: "application/json" } }
+    );
+    const data = await res.json();
+    if (!data.ok) {
+      throw new Error(data.error || "Vérification impossible");
+    }
+    return data.payment;
+  }
+
+  async function pollPayment(method, reference, { attempts = 12, delayMs = 2500 } = {}) {
+    for (let i = 0; i < attempts; i++) {
+      const result = await verifyPayment(method, reference);
+      if (result.paid) {
+        return result;
+      }
+      await new Promise((r) => setTimeout(r, delayMs));
+    }
+    throw new Error("Paiement non confirmé. Réessayez ou contactez le support.");
+  }
+
+  async function checkPaymentDeployment() {
+    const res = await fetch(`${PAYMENTS_API}?action=check`, { headers: { Accept: "application/json" } });
+    const data = await res.json();
+    return data.deployment || null;
   }
 
   return {
     CART_KEY,
-    ADMIN_KEY,
     STATUS_FLOW,
     STATUS_LABELS,
     PAYMENT_METHODS,
-    SHIPPING_FEE,
-    FREE_SHIPPING_FROM,
+    get SHIPPING_FEE() {
+      return SHIPPING_FEE;
+    },
+    get FREE_SHIPPING_FROM() {
+      return FREE_SHIPPING_FROM;
+    },
+    get settings() {
+      return SITE_SETTINGS;
+    },
     formatPrice,
     formatDate,
+    loadSettings,
     loadCart,
     saveCart,
     clearCart,
@@ -335,5 +419,12 @@ const PEV = (() => {
     confirmDelivery,
     statusIndex,
     simulatePayment,
+    processPayment,
+    verifyPayment,
+    pollPayment,
+    checkPaymentDeployment,
+    adminLogin,
+    adminLogout,
+    checkAdmin,
   };
 })();

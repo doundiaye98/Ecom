@@ -1,4 +1,4 @@
-﻿const PRODUCTS = [
+﻿const FALLBACK_PRODUCTS = [
   {
     id: "six-star-testosterone",
     name: "Six Star Testosterone Booster",
@@ -311,4 +311,186 @@
       "Goût orange naturel",
     ],
   },
+  {
+    id: "orgain-creatine",
+    name: "Orgain Creatine Monohydrate",
+    category: "homme",
+    categoryLabel: "Homme",
+    price: 24900,
+    badge: "Nouveau",
+    image: "img/WhatsApp Image 2026-08-18 at 16.25.33.jpeg",
+    short: "Créatine micronisée 5 g — puissance, performance et récupération.",
+    desc: "100 portions de créatine monohydrate micronisée Orgain. Sans OGM, sans gluten, sans sucre ajouté. Soutient la force musculaire, la fonction cognitive et la récupération après l'effort.",
+    benefits: [
+      "Soutient la force et la puissance musculaire",
+      "Favorise la fonction cognitive",
+      "Améliore les performances physiques",
+      "Aide à la récupération après l'effort",
+    ],
+  },
+  {
+    id: "dr-rashel-24k-gold",
+    name: "Dr. Rashel 24K Gold Primer Serum",
+    category: "beaute",
+    categoryLabel: "Beauté",
+    price: 19900,
+    badge: "Nouveau",
+    image: "img/WhatsApp Image 2026-08-18 at 16.25.3.jpeg",
+    short: "Sérum visage 24K Gold — éclat, jeunesse et fermeté.",
+    desc: "Sérum primer anti-âge à l'or 24K par Dr. Rashel. Éclat immédiat, hydratation intense et régénération cellulaire pour tous types de peaux.",
+    benefits: [
+      "Éclat immédiat dès la première utilisation",
+      "Anti-âge puissant — réduit rides et ridules",
+      "Hydratation intense toute la journée",
+      "Régénération cellulaire",
+    ],
+  },
+  {
+    id: "california-gold-creatine",
+    name: "California Gold Nutrition Creatine",
+    category: "homme",
+    categoryLabel: "Homme",
+    price: 22900,
+    badge: "Nouveau",
+    image: "img/WhatsApp Image 2026-08-18 at 16.25..jpeg",
+    short: "Créatine monohydrate Sport — 5 g par portion, qualité premium.",
+    desc: "Créatine monohydrate California Gold Nutrition Sport. 454 g (~90 portions). Sans gluten, sans OGM, sans soja. Soutient la force, la performance et la récupération.",
+    benefits: [
+      "Soutient la force et la puissance musculaire",
+      "Améliore les performances physiques",
+      "Favorise une récupération rapide",
+      "Soutient la fonction cognitive",
+    ],
+  },
+  {
+    id: "dr-rashel-collagen-serum",
+    name: "Dr. Rashel Collagen Firming Serum",
+    category: "beaute",
+    categoryLabel: "Beauté",
+    price: 18900,
+    badge: "Nouveau",
+    image: "img/WhatsApp Image 2026-08-18 at 16.2.jpeg",
+    short: "Sérum collagène — raffermit, lisse et rajeunit la peau.",
+    desc: "Sérum primer Dr. Rashel au collagène pour augmenter l'élasticité et la fermeté de la peau. Formule avancée, testée dermatologiquement, convient à tous types de peaux.",
+    benefits: [
+      "Raffermit et améliore l'élasticité",
+      "Réduit les rides et ridules",
+      "Rend la peau lisse et éclatante",
+      "Usage quotidien — matin & soir",
+    ],
+  },
+  {
+    id: "ensure-original",
+    name: "Ensure Original Nutrition Shake",
+    category: "energie",
+    categoryLabel: "Énergie",
+    price: 34900,
+    badge: "Nouveau",
+    image: "img/WhatsApp Image 2026-08-19 at 08.22.05.jpeg",
+    short: "Shake nutritionnel vanille — 9 g protéines, 27 vitamines & minéraux.",
+    desc: "Ensure Original Nutrition Shake vanille. Nutrition complète et équilibrée avec 9 g de protéines, 220 calories et 27 vitamines & minéraux. Pack de 24 bouteilles.",
+    benefits: [
+      "Source de protéines de haute qualité",
+      "Aide à maintenir la masse musculaire",
+      "27 vitamines et minéraux essentiels",
+      "Parfait en collation ou après l'entraînement",
+    ],
+  },
+  {
+    id: "premier-protein-coffeehouse",
+    name: "Premier Protein Coffeehouse",
+    category: "energie",
+    categoryLabel: "Énergie",
+    price: 36900,
+    badge: "Nouveau",
+    image: "img/WhatsApp Image 2026-08-19 at 08.22.07.jpeg",
+    short: "Shake protéiné caramel macchiato — 30 g protéines, goût café.",
+    desc: "Premier Protein Coffeehouse Caramel Macchiato. 30 g de protéines, 160 calories, 24 vitamines & minéraux, sans sucre ajouté. Pack de 12 bouteilles.",
+    benefits: [
+      "30 g de protéines par bouteille",
+      "Seulement 160 calories",
+      "24 vitamines et minéraux",
+      "Délicieux goût café caramel",
+    ],
+  },
+  {
+    id: "liquid-collagen",
+    name: "Applied Nutrition Liquid Collagen",
+    category: "beaute",
+    categoryLabel: "Beauté",
+    price: 21900,
+    badge: "Nouveau",
+    image: "img/WhatsApp Image 2026-08-19 at 08.22.0.jpeg",
+    short: "Collagène liquide — peau, cheveux et ongles revitalisés.",
+    desc: "Liquid Collagen Skin Revitalization par Applied Nutrition. Collagène hydrolysé (4000 mg), biotine (2000 mcg) et silice (6000 mcg). Saveur tropicale fraise et kiwi. 10 tubes liquides.",
+    benefits: [
+      "Peau éclatante et hydratée",
+      "Cheveux fortifiés",
+      "Ongles plus solides",
+      "Seulement 25 calories par portion",
+    ],
+  },
+  {
+    id: "force-factor-tribulus",
+    name: "Force Factor Tribulus Terrestris",
+    category: "homme",
+    categoryLabel: "Homme",
+    price: 19900,
+    badge: "Nouveau",
+    image: "img/WhatsApp Image 2026-08-19 at 20.41.12.jpeg",
+    short: "Soutien naturel testostérone — force, énergie et confiance.",
+    desc: "Force Factor Fundamentals Tribulus Terrestris. Formule puissante à base d'extrait pur, absorption supérieure, sans OGM. Fabriqué aux USA. 60 capsules — 2 par jour.",
+    benefits: [
+      "Aide à augmenter la testostérone naturellement",
+      "Absorption supérieure",
+      "Ingrédients naturels",
+      "Qualité premium — fabriqué aux USA",
+    ],
+  },
+  {
+    id: "sadoer-muscle-stimulator",
+    name: "Sadoer Muscle Stimulator",
+    category: "homme",
+    categoryLabel: "Homme",
+    price: 15900,
+    badge: "Nouveau",
+    image: "img/WhatsApp Image 2026-08-19 at 20.41.1.jpeg",
+    short: "Gel crème tonifiant — sculpte et renforce la definition musculaire.",
+    desc: "Sadoer Abs Muscle Stimulator Six Pack Toning Cream. Formule 6 en 1 pour brûler les graisses, augmenter la masse musculaire et tonifier le corps. 60 g — absorption rapide, sans résidu gras.",
+    benefits: [
+      "Brûle les graisses localement",
+      "Augmente la masse musculaire",
+      "Sculpte et tonifie le corps",
+      "Résultats rapides et durables",
+    ],
+  },
 ];
+
+let PRODUCTS = FALLBACK_PRODUCTS;
+
+async function loadProducts() {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 5000);
+  try {
+    const res = await fetch("api/products.php?action=list", {
+      headers: { Accept: "application/json" },
+      signal: controller.signal,
+    });
+    const data = await res.json();
+    if (data.ok && Array.isArray(data.products) && data.products.length) {
+      PRODUCTS = data.products;
+    } else {
+      PRODUCTS = FALLBACK_PRODUCTS;
+    }
+  } catch (err) {
+    console.warn("API produits indisponible, catalogue local utilisé.", err);
+    PRODUCTS = FALLBACK_PRODUCTS;
+  } finally {
+    clearTimeout(timeoutId);
+  }
+  window.PRODUCTS = PRODUCTS;
+  return PRODUCTS;
+}
+
+window.loadProducts = loadProducts;
+window.PRODUCTS = PRODUCTS;

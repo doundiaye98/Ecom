@@ -6,9 +6,10 @@
   <title>Paiement sécurisé — Pure Essence Vita</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Great+Vibes&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/checkout.css" />
+  <link rel="stylesheet" href="css/chatbot.css" />
 </head>
 <body class="page-checkout">
   <div class="announcement">
@@ -67,11 +68,12 @@
 
         <!-- Step 2 -->
         <div class="checkout-panel" id="step2" hidden>
-          <h1>Paiement en ligne</h1>
-          <p class="muted">Choisissez votre moyen de paiement. Transaction sécurisée.</p>
+          <h1>Paiement mobile — Sénégal</h1>
+          <p class="muted">Wave, Orange Money ou paiement à la livraison. Transactions sécurisées en FCFA.</p>
+          <div class="payment-mode-banner is-sandbox" id="paymentModeBanner" hidden></div>
 
           <div class="pay-methods" id="payMethods" role="radiogroup" aria-label="Moyens de paiement">
-            <label class="pay-card is-selected">
+            <label class="pay-card is-selected" data-method="wave">
               <input type="radio" name="payMethod" value="wave" checked />
               <span class="pay-card__badge pay-card__badge--wave">Wave</span>
               <span class="pay-card__text">
@@ -79,7 +81,7 @@
                 <small>Paiement mobile instantané</small>
               </span>
             </label>
-            <label class="pay-card">
+            <label class="pay-card" data-method="orange">
               <input type="radio" name="payMethod" value="orange" />
               <span class="pay-card__badge pay-card__badge--orange">OM</span>
               <span class="pay-card__text">
@@ -87,15 +89,7 @@
                 <small>Paiement mobile sécurisé</small>
               </span>
             </label>
-            <label class="pay-card">
-              <input type="radio" name="payMethod" value="card" />
-              <span class="pay-card__badge pay-card__badge--card">CB</span>
-              <span class="pay-card__text">
-                <strong>Carte bancaire</strong>
-                <small>Visa / Mastercard</small>
-              </span>
-            </label>
-            <label class="pay-card">
+            <label class="pay-card" data-method="cod">
               <input type="radio" name="payMethod" value="cod" />
               <span class="pay-card__badge pay-card__badge--cod">COD</span>
               <span class="pay-card__text">
@@ -108,27 +102,13 @@
           <div class="pay-details" id="payDetails">
             <div class="pay-box" data-for="wave">
               <label for="wavePhone">Numéro Wave</label>
-              <input id="wavePhone" placeholder="77 000 00 00" />
+              <input id="wavePhone" placeholder="77 000 00 00" inputmode="tel" />
+              <p class="info-banner pay-sandbox-note" id="waveSandboxNote" hidden>Mode sandbox — paiement simulé sans clés Wave dans .env</p>
             </div>
             <div class="pay-box" data-for="orange" hidden>
               <label for="orangePhone">Numéro Orange Money</label>
-              <input id="orangePhone" placeholder="77 000 00 00" />
-            </div>
-            <div class="pay-box" data-for="card" hidden>
-              <div class="form-row">
-                <label for="cardNumber">Numéro de carte</label>
-                <input id="cardNumber" placeholder="4242 4242 4242 4242" maxlength="19" />
-              </div>
-              <div class="form-inline">
-                <div class="form-row">
-                  <label for="cardExp">Expiration</label>
-                  <input id="cardExp" placeholder="MM/AA" maxlength="5" />
-                </div>
-                <div class="form-row">
-                  <label for="cardCvv">CVV</label>
-                  <input id="cardCvv" placeholder="123" maxlength="4" />
-                </div>
-              </div>
+              <input id="orangePhone" placeholder="77 000 00 00" inputmode="tel" />
+              <p class="info-banner pay-sandbox-note" id="orangeSandboxNote" hidden>Mode sandbox — paiement simulé sans clés Orange Money dans .env</p>
             </div>
             <div class="pay-box" data-for="cod" hidden>
               <p class="info-banner">Vous paierez le montant total au livreur lors de la réception. Préparez l'appoint si possible.</p>
@@ -195,5 +175,6 @@
   <script src="js/products.js"></script>
   <script src="js/store.js"></script>
   <script src="js/checkout.js"></script>
+  <script src="js/chatbot.js"></script>
 </body>
 </html>

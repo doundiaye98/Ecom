@@ -342,6 +342,12 @@ function setupReveal() {
 
 function animateCounters() {
   const nums = $$("[data-count]");
+  nums.forEach((el) => {
+    const label = el.closest(".stat")?.querySelector(".stat__label")?.textContent || "";
+    if (label.includes("Produits") && Array.isArray(PRODUCTS)) {
+      el.dataset.count = String(PRODUCTS.length);
+    }
+  });
   const io = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -370,15 +376,32 @@ function animateCounters() {
 function setupContact() {
   const form = $("#contactForm");
   if (!form) return;
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const success = $("#formSuccess");
-    success.hidden = false;
-    e.target.reset();
-    showToast("Message envoyé");
-    setTimeout(() => {
-      success.hidden = true;
-    }, 4000);
+    const fd = new FormData(form);
+    const payload = {
+      name: String(fd.get("name") || "").trim(),
+      email: String(fd.get("email") || "").trim(),
+      message: String(fd.get("message") || "").trim(),
+    };
+    try {
+      const res = await fetch("api/contact.php?action=send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!data.ok) throw new Error(data.error || "Erreur d'envoi");
+      const success = $("#formSuccess");
+      success.hidden = false;
+      e.target.reset();
+      showToast("Message envoyé");
+      setTimeout(() => {
+        success.hidden = true;
+      }, 4000);
+    } catch (err) {
+      showToast(err.message || "Impossible d'envoyer le message");
+    }
   });
 }
 
@@ -470,12 +493,37 @@ function setupEvents() {
 }
 
 /* ---------- Loader ---------- */
+function hideLoader() {
+  const loader = $("#pageLoader");
+  if (loader && !loader.classList.contains("is-done")) {
+    loader.classList.add("is-done");
+  }
+}
+
 function setupLoader() {
-  window.addEventListener("load", () => {
-    setTimeout(() => {
-      $("#pageLoader").classList.add("is-done");
-    }, 600);
-  });
+  const started = performance.now();
+  const minDisplay = 350;
+
+  function finish() {
+    const wait = Math.max(0, minDisplay - (performance.now() - started));
+    setTimeout(hideLoader, wait);
+  }
+
+  if (document.readyState === "complete") {
+    finish();
+  } else {
+    window.addEventListener("load", finish, { once: true });
+  }
+
+  // Ne jamais bloquer l'écran plus de 2,5 s
+  setTimeout(hideLoader, 2500);
+}
+
+function withTimeout(promise, ms = 5000) {
+  return Promise.race([
+    promise,
+    new Promise((resolve) => setTimeout(resolve, ms)),
+  ]);
 }
 
 /* ---------- Init ---------- */
@@ -484,7 +532,6 @@ function init() {
 
   const year = $("#year");
   if (year) year.textContent = new Date().getFullYear();
-  setupLoader();
   setupNav();
   setupSearch();
   setupFilters();
@@ -517,4 +564,25 @@ function init() {
   }
 }
 
-document.addEventListener("DOMContentLoaded", init);
+document.addEventListener("DOMContentLoaded", async () => {
+  setupLoader();
+
+  if (location.protocol === "file:") {
+    console.warn("Ouvrez le site via http://localhost/Ecom/ (pas en file://)");
+  }
+
+  try {
+    const tasks = [];
+    if (typeof loadProducts === "function") tasks.push(withTimeout(loadProducts(), 5000));
+    if (typeof PEV !== "undefined" && PEV.loadSettings) tasks.push(withTimeout(PEV.loadSettings(), 5000));
+    await Promise.all(tasks);
+  } catch (err) {
+    console.warn("Chargement partiel du site", err);
+  }
+
+  if (PEV?.settings?.whatsapp) {
+    window.WHATSAPP_NUMBER = PEV.settings.whatsapp;
+  }
+
+  init();
+});
