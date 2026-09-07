@@ -58,7 +58,8 @@ storefront_boot();
 
     <div class="search-bar" id="searchBar">
       <div class="container">
-        <input type="search" id="searchInput" placeholder="Rechercher un produit…" autocomplete="off" />
+        <label class="visually-hidden" for="searchInput">Rechercher un produit</label>
+        <input type="search" id="searchInput" name="search" placeholder="Rechercher un produit…" autocomplete="off" />
       </div>
     </div>
   </header>
