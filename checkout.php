@@ -8,7 +8,7 @@ storefront_boot();
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
-  <title>Paiement sécurisé — Pure Essence Vita</title>
+  <title>Paiement sécurisé — Native Vita</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Great+Vibes&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -25,7 +25,7 @@ storefront_boot();
   <header class="header is-scrolled">
     <div class="container header__inner header__inner--simple">
       <a href="index.php" class="brand">
-        <img src="logo/2608843d-81e3-494b-9808-d60e0ec10072.jpeg" alt="Pure Essence Vita" class="brand__logo" />
+        <img src="logo/native-vita.jpeg" alt="Native Vita" class="brand__logo" />
       </a>
       <nav class="checkout-steps" id="checkoutSteps" aria-label="Étapes">
         <span class="step is-active" data-step="1">1. Livraison</span>
@@ -81,7 +81,7 @@ storefront_boot();
           <div class="pay-methods" id="payMethods" role="radiogroup" aria-label="Moyens de paiement">
             <label class="pay-card is-selected" data-method="wave">
               <input type="radio" name="payMethod" value="wave" checked />
-              <span class="pay-card__badge pay-card__badge--wave">Wave</span>
+              <img class="pay-card__logo" src="img/wave.jpg" alt="Wave" width="48" height="48" loading="lazy" />
               <span class="pay-card__text">
                 <strong>Wave</strong>
                 <small>Paiement mobile instantané</small>
@@ -89,7 +89,7 @@ storefront_boot();
             </label>
             <label class="pay-card" data-method="orange">
               <input type="radio" name="payMethod" value="orange" />
-              <span class="pay-card__badge pay-card__badge--orange">OM</span>
+              <img class="pay-card__logo" src="img/orangemoney.jpg" alt="Orange Money" width="48" height="48" loading="lazy" />
               <span class="pay-card__text">
                 <strong>Orange Money</strong>
                 <small>Paiement mobile sécurisé</small>
@@ -107,11 +107,19 @@ storefront_boot();
 
           <div class="pay-details" id="payDetails">
             <div class="pay-box" data-for="wave">
+              <figure class="pay-qr">
+                <img src="img/wave.jpg" alt="QR code Wave — Payez avec Wave" loading="lazy" />
+                <figcaption>Scannez avec l'application Wave ou saisissez votre numéro ci-dessous.</figcaption>
+              </figure>
               <label for="wavePhone">Numéro Wave</label>
               <input id="wavePhone" placeholder="77 000 00 00" inputmode="tel" />
               <p class="info-banner pay-sandbox-note" id="waveSandboxNote" hidden>Mode sandbox — paiement simulé sans clés Wave dans .env</p>
             </div>
             <div class="pay-box" data-for="orange" hidden>
+              <figure class="pay-qr">
+                <img src="img/orangemoney.jpg" alt="QR code Orange Money — Code marchand" loading="lazy" />
+                <figcaption>Scannez avec Orange Money ou saisissez votre numéro ci-dessous.</figcaption>
+              </figure>
               <label for="orangePhone">Numéro Orange Money</label>
               <input id="orangePhone" placeholder="77 000 00 00" inputmode="tel" />
               <p class="info-banner pay-sandbox-note" id="orangeSandboxNote" hidden>Mode sandbox — paiement simulé sans clés Orange Money dans .env</p>

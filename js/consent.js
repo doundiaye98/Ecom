@@ -3,7 +3,7 @@
  */
 (function () {
   const STORAGE_KEY = "pev_consent_v1";
-  const BRAND = "Pure Essence Vita";
+  const BRAND = "Native Vita";
 
   function getConsent() {
     try {
@@ -49,7 +49,7 @@
         <p>Traitement des commandes, livraison au Sénégal, suivi colis, support client et amélioration de nos services.</p>
 
         <h3>Vos droits</h3>
-        <p>Vous pouvez demander l'accès, la rectification ou la suppression de vos données en nous contactant à <a href="mailto:contact@pureessencevita.com">contact@pureessencevita.com</a> ou via WhatsApp.</p>
+        <p>Vous pouvez demander l'accès, la rectification ou la suppression de vos données en nous contactant à <a href="mailto:contact@nativevita.com">contact@nativevita.com</a> ou via WhatsApp.</p>
 
         <h3>Conservation</h3>
         <p>Les données de commande sont conservées le temps nécessaire à la gestion commerciale et aux obligations légales.</p>

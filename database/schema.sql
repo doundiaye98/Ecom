@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS customers (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     phone_norm VARCHAR(20) NOT NULL,
     phone_display VARCHAR(50) NOT NULL,
-    email VARCHAR(255) DEFAULT NULL,
+    email VARCHAR(191) DEFAULT NULL,
     password_hash VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL DEFAULT '',
     address TEXT DEFAULT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS orders (
     currency CHAR(3) NOT NULL DEFAULT 'XOF',
     customer_name VARCHAR(255) NOT NULL,
     customer_phone VARCHAR(50) NOT NULL,
-    customer_email VARCHAR(255) DEFAULT NULL,
+    customer_email VARCHAR(191) DEFAULT NULL,
     customer_address TEXT NOT NULL,
     customer_city VARCHAR(100) NOT NULL,
     customer_notes TEXT DEFAULT NULL,
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS orders (
     payment_paid TINYINT(1) NOT NULL DEFAULT 0,
     payment_reference VARCHAR(50) DEFAULT NULL,
     payment_paid_at DATETIME DEFAULT NULL,
-    shipping_carrier VARCHAR(100) NOT NULL DEFAULT 'Pure Essence Express',
+    shipping_carrier VARCHAR(100) NOT NULL DEFAULT 'Native Vita Express',
     shipping_estimated_days TINYINT UNSIGNED NOT NULL DEFAULT 3,
     delivery_confirmed_at DATETIME DEFAULT NULL,
     created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS settings (
 INSERT INTO settings (setting_key, setting_value) VALUES
     ('shipping_fee', '2000'),
     ('free_shipping_from', '50000'),
-    ('site_name', 'Pure Essence Vita'),
-    ('whatsapp', '221000000000'),
-    ('contact_email', 'contact@pureessencevita.com')
+    ('site_name', 'Native Vita'),
+    ('whatsapp', '13478441197'),
+    ('contact_email', 'contact@nativevita.com')
 ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value);

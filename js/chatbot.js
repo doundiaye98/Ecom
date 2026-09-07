@@ -48,11 +48,11 @@
     if (!config) {
       config = {
         enabled: true,
-        brandName: "Pure Essence Vita",
-        agentName: "Essence",
-        welcome: "Bonjour ! Comment puis-je vous aider ?",
+        brandName: "Native Vita",
+        agentName: "Vita",
+        welcome: "Bonjour ! Je suis Vita, votre assistante Native Vita. Comment puis-je vous aider ?",
         fallback: "Je n'ai pas bien compris. Choisissez une option ci-dessous.",
-        whatsapp: "221771234567",
+        whatsapp: "13478441197",
         quickReplies: [
           { id: "products", label: "Voir les produits" },
           { id: "payment_wave", label: "Payer avec Wave" },
@@ -73,22 +73,22 @@
   }
 
   function whatsappUrl() {
-    const num = String(config?.whatsapp || "221771234567").replace(/\D/g, "");
-    const msg = encodeURIComponent("Bonjour Pure Essence Vita, j'aimerais des informations.");
+    const num = String(config?.whatsapp || "13478441197").replace(/\D/g, "");
+    const msg = encodeURIComponent("Bonjour Native Vita, j'aimerais des informations.");
     return `https://wa.me/${num}?text=${msg}`;
   }
 
   function buildWidget() {
     const root = el("div", "pev-chat");
     root.innerHTML = `
-      <button type="button" class="pev-chat__toggle" id="pevChatToggle" aria-label="Ouvrir le chatbot Essence" aria-expanded="false" aria-controls="pevChatPanel">
+      <button type="button" class="pev-chat__toggle" id="pevChatToggle" aria-label="Ouvrir le chatbot Vita" aria-expanded="false" aria-controls="pevChatPanel">
         <span class="pev-chat__toggle-icon" aria-hidden="true">💬</span>
       </button>
-      <div class="pev-chat__panel" id="pevChatPanel" role="dialog" aria-label="Assistant Essence" aria-hidden="true">
+      <div class="pev-chat__panel" id="pevChatPanel" role="dialog" aria-label="Assistant Vita" aria-hidden="true">
         <header class="pev-chat__header">
           <div>
-            <strong id="pevChatAgent">${escapeHtml(config?.agentName || "Essence")}</strong>
-            <span id="pevChatBrand">${escapeHtml(config?.brandName || "Pure Essence Vita")}</span>
+            <strong id="pevChatAgent">${escapeHtml(config?.agentName || "Vita")}</strong>
+            <span id="pevChatBrand">${escapeHtml(config?.brandName || "Native Vita")}</span>
           </div>
           <button type="button" class="pev-chat__close" id="pevChatClose" aria-label="Fermer">×</button>
         </header>

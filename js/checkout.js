@@ -220,7 +220,7 @@
       subtotal,
       total,
       customer,
-      shipping: { fee: shipping, estimatedDays: 3, carrier: "Pure Essence Express" },
+      shipping: { fee: shipping, estimatedDays: 3, carrier: "Native Vita Express" },
     };
 
     try {

@@ -125,6 +125,17 @@
   box-shadow: inset 0 0 0 1px rgba(212, 175, 55, 0.15);
 }
 
+.pay-card__logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  object-fit: cover;
+  object-position: top center;
+  flex-shrink: 0;
+  border: 1px solid var(--line);
+  background: #fff;
+}
+
 .pay-card__badge {
   width: 42px;
   height: 42px;
@@ -141,6 +152,27 @@
 .pay-card__badge--orange { background: #ff7900; }
 .pay-card__badge--card { background: var(--forest); }
 .pay-card__badge--cod { background: #5c635e; }
+
+.pay-qr {
+  margin: 0;
+  text-align: center;
+}
+
+.pay-qr img {
+  max-width: min(240px, 100%);
+  height: auto;
+  border-radius: 12px;
+  margin: 0 auto;
+  display: block;
+  box-shadow: 0 8px 24px rgba(0, 68, 27, 0.1);
+}
+
+.pay-qr figcaption {
+  margin-top: 0.65rem;
+  font-size: 0.82rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
 
 .pay-card__text {
   display: grid;

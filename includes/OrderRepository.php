@@ -273,7 +273,7 @@ final class OrderRepository
                 $paid ? 1 : 0,
                 $reference,
                 $paid ? $now : null,
-                (string) ($shipping['carrier'] ?? 'Pure Essence Express'),
+                (string) ($shipping['carrier'] ?? 'Native Vita Express'),
                 (int) ($shipping['estimatedDays'] ?? 3),
             ]);
 

@@ -8,17 +8,17 @@ final class ChatbotService
     {
         return [
             'enabled' => Env::bool('CHATBOT_ENABLED', true),
-            'brandName' => Env::get('CHATBOT_BRAND_NAME', 'Pure Essence Vita'),
-            'agentName' => Env::get('CHATBOT_AGENT_NAME', 'Essence'),
+            'brandName' => Env::get('CHATBOT_BRAND_NAME', 'Native Vita'),
+            'agentName' => Env::get('CHATBOT_AGENT_NAME', 'Vita'),
             'welcome' => Env::get(
                 'CHATBOT_WELCOME',
-                'Bonjour ! Je suis Essence, votre assistante Pure Essence Vita. Comment puis-je vous aider ?'
+                'Bonjour ! Je suis Vita, votre assistante Native Vita. Comment puis-je vous aider ?'
             ),
             'fallback' => Env::get(
                 'CHATBOT_FALLBACK',
                 'Je n\'ai pas bien compris. Choisissez une option ci-dessous ou contactez-nous sur WhatsApp.'
             ),
-            'whatsapp' => Env::get('WHATSAPP_NUMBER', '221771234567'),
+            'whatsapp' => Env::get('WHATSAPP_NUMBER', '13478441197'),
             'country' => Env::get('PAYMENT_COUNTRY', 'SN'),
             'currency' => Env::get('PAYMENT_CURRENCY', 'XOF'),
             'quickReplies' => [
@@ -64,11 +64,11 @@ final class ChatbotService
                 'quickReplies' => ['products', 'whatsapp', 'delivery'],
             ],
             'delivery' => [
-                'text' => "Livraison Pure Essence Vita :\n• Frais : 2 000 FCFA\n• Gratuite dès 50 000 FCFA\n• Délai : 2 à 4 jours au Sénégal\n• Livraison soignée à Dakar et régions",
+                'text' => "Livraison Native Vita :\n• Frais : 2 000 FCFA\n• Gratuite dès 50 000 FCFA\n• Délai : 2 à 4 jours au Sénégal\n• Livraison soignée à Dakar et régions",
                 'quickReplies' => ['products', 'payment_wave', 'whatsapp'],
             ],
             'contact' => [
-                'text' => "Notre équipe est disponible pour vous accompagner.\n• WhatsApp : contact direct\n• Email : contact@pureessencevita.com\n• Formulaire : section Contact du site",
+                'text' => "Notre équipe est disponible pour vous accompagner.\n• WhatsApp : contact direct\n• Email : contact@nativevita.com\n• Formulaire : section Contact du site",
                 'quickReplies' => ['whatsapp', 'products', 'track'],
             ],
             'whatsapp' => [

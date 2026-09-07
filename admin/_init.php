@@ -70,7 +70,7 @@ function admin_layout(string $title, string $content, string $active = ''): void
   <header class="admin-top">
     <div class="container" style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap">
       <div>
-        <strong>Pure Essence Vita</strong>
+        <strong>Native Vita</strong>
         <div style="opacity:.75;font-size:.85rem">Administration · <?= htmlspecialchars($user['username'] ?? '') ?></div>
       </div>
       <nav class="admin-nav">

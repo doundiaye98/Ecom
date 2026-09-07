@@ -8,8 +8,8 @@ storefront_boot();
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
-  <meta name="description" content="Pure Essence Vita by Faebene Diop — Compléments alimentaires premium pour votre vitalité, beauté et bien-être." />
-  <title>Pure Essence Vita — By Faebene Diop</title>
+  <meta name="description" content="Native Vita by Faebene Diop — Compléments alimentaires premium pour votre vitalité, beauté et bien-être." />
+  <title>Native Vita — By Faebene Diop</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Great+Vibes&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -19,12 +19,12 @@ storefront_boot();
 </head>
 <body>
   <div class="page-loader" id="pageLoader">
-    <img src="logo/2608843d-81e3-494b-9808-d60e0ec10072.jpeg" alt="" class="loader-logo" />
+    <img src="logo/native-vita.jpeg" alt="" class="loader-logo" />
     <div class="loader-bar"><span></span></div>
   </div>
 
   <div class="announcement">
-    <p><span class="announcement__full">Livraison soignée · Produits sélectionnés · Vitalité naturelle</span><span class="announcement__short">Livraison soignée · Vitalité naturelle</span></p>
+    <p><span class="announcement__full">Native Vita · Made in USA &amp; Asia · Livraison soignée</span><span class="announcement__short">Native Vita · Livraison soignée</span></p>
   </div>
 
   <header class="header" id="header">
@@ -34,7 +34,7 @@ storefront_boot();
       </button>
 
       <a href="#accueil" class="brand">
-        <img src="logo/2608843d-81e3-494b-9808-d60e0ec10072.jpeg" alt="Pure Essence Vita by Faebene Diop" class="brand__logo" />
+        <img src="logo/native-vita.jpeg" alt="Native Vita by Faebene Diop" class="brand__logo" />
       </a>
 
       <div class="header__actions">
@@ -66,20 +66,23 @@ storefront_boot();
   <main>
     <section class="hero" id="accueil">
       <div class="hero__bg" aria-hidden="true"></div>
+      <div class="hero__glow hero__glow--gold" aria-hidden="true"></div>
+      <div class="hero__glow hero__glow--forest" aria-hidden="true"></div>
       <div class="hero__leaf hero__leaf--1" aria-hidden="true"></div>
       <div class="hero__leaf hero__leaf--2" aria-hidden="true"></div>
+      <div class="hero__mesh" aria-hidden="true"></div>
 
       <div class="container hero__content">
         <div class="hero__brand reveal">
-          <img src="logo/2608843d-81e3-494b-9808-d60e0ec10072.jpeg" alt="Pure Essence Vita by Faebene Diop" class="hero__logo" />
+          <img src="logo/native-vita.jpeg" alt="Native Vita by Faebene Diop" class="hero__logo" />
         </div>
-        <h1 class="hero__title reveal reveal-delay-1">L'<span class="text-gold">essence</span> pure de votre <span class="text-green">vitalité</span></h1>
+        <h1 class="hero__title reveal reveal-delay-1">Votre <span class="text-gold">vitalité</span>, <span class="text-green">naturellement</span></h1>
         <p class="hero__byline reveal reveal-delay-1">
           <span class="brand-script">By</span>
           <span class="brand-signature">Faebene Diop</span>
         </p>
         <p class="hero__subtitle reveal reveal-delay-2">
-          Une sélection premium de compléments pour la beauté, l'énergie et le bien-être — conçue avec soin par Faebene Diop.
+          Multivitamines, collagène, protéines et skin care — Made in USA &amp; Asia.
         </p>
         <div class="hero__cta reveal reveal-delay-3">
           <a href="#produits" class="btn btn--gold">Découvrir la collection</a>
@@ -176,7 +179,7 @@ storefront_boot();
     <section class="benefits" id="bienfaits">
       <div class="container">
         <div class="section-head reveal">
-          <p class="eyebrow">Pourquoi Pure Essence Vita</p>
+          <p class="eyebrow">Pourquoi Native Vita</p>
           <h2 class="section-title">Une vitalité qui <span class="text-gold">se voit</span></h2>
           <p class="section-desc">Chaque produit est choisi pour accompagner votre routine avec élégance, efficacité et plaisir au quotidien.</p>
         </div>
@@ -214,7 +217,7 @@ storefront_boot();
           <p class="eyebrow">Notre histoire</p>
           <h2 class="section-title"><span class="brand-script">By</span> Faebene Diop</h2>
           <p>
-            Pure Essence Vita naît d'une conviction simple : la vraie beauté et la vitalité commencent de l'intérieur.
+            Native Vita naît d'une conviction simple : la vraie beauté et la vitalité commencent de l'intérieur.
             Nous sélectionnons des compléments d'exception — collagène, vitamines, formules naturelles — pour vous offrir une expérience premium, sensorielle et authentique.
           </p>
           <p>
@@ -241,8 +244,8 @@ storefront_boot();
 
     <section class="cta-banner">
       <div class="container cta-banner__inner reveal">
-        <h2>Prêt à révéler votre essence ?</h2>
-        <p>Explorez la collection et composez votre routine Pure Essence Vita.</p>
+        <h2>Prêt à révéler votre vitalité ?</h2>
+        <p>Explorez la collection et composez votre routine Native Vita.</p>
         <a href="#produits" class="btn btn--gold">Voir les produits</a>
       </div>
     </section>
@@ -256,15 +259,15 @@ storefront_boot();
           <ul class="contact__list">
             <li>
               <strong>Marque</strong>
-              <span>Pure Essence Vita · By Faebene Diop</span>
+              <span>Native Vita · By Faebene Diop</span>
             </li>
             <li>
               <strong>Email</strong>
-              <a href="mailto:contact@pureessencevita.com">contact@pureessencevita.com</a>
+              <a href="mailto:contact@nativevita.com">contact@nativevita.com</a>
             </li>
             <li>
               <strong>WhatsApp</strong>
-              <a href="https://wa.me/221000000000" target="_blank" rel="noopener">+221 00 000 00 00</a>
+              <a href="https://wa.me/13478441197" target="_blank" rel="noopener">+1 (347) 844-1197</a>
             </li>
           </ul>
         </div>
@@ -291,7 +294,7 @@ storefront_boot();
   <footer class="footer">
     <div class="container footer__grid">
       <div class="footer__brand">
-        <img src="logo/2608843d-81e3-494b-9808-d60e0ec10072.jpeg" alt="Pure Essence Vita" />
+        <img src="logo/native-vita.jpeg" alt="Native Vita" />
         <p>Compléments premium pour une beauté et une vitalité authentiques.</p>
       </div>
       <div>
@@ -312,7 +315,7 @@ storefront_boot();
     </div>
     <div class="footer__bottom">
       <div class="container">
-        <p>© <span id="year"></span> Pure Essence Vita by Faebene Diop. Tous droits réservés. · <a href="#" id="footerPrivacyLink" class="footer__privacy">Confidentialité</a></p>
+        <p>© <span id="year"></span> Native Vita by Faebene Diop. Tous droits réservés. · <a href="#" id="footerPrivacyLink" class="footer__privacy">Confidentialité</a></p>
       </div>
     </div>
   </footer>

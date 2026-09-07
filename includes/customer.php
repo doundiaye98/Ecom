@@ -45,13 +45,10 @@ function customer_head(string $title, string $active = 'dashboard'): void
   <link rel="stylesheet" href="css/consent.css" />
 </head>
 <body class="account-page" data-active-nav="<?= storefront_escape($active) ?>">
-  <div class="account-announce">
-    <p>Espace client · Suivi & commandes <?= storefront_escape($site) ?></p>
-  </div>
   <header class="header is-scrolled account-header">
     <div class="container header__inner header__inner--simple">
       <a href="index.php" class="brand">
-        <img src="logo/2608843d-81e3-494b-9808-d60e0ec10072.jpeg" alt="<?= storefront_escape($site) ?>" class="brand__logo" />
+        <img src="logo/native-vita.jpeg" alt="<?= storefront_escape($site) ?>" class="brand__logo" />
       </a>
       <div class="header-links">
         <a href="index.php#produits">Boutique</a>
@@ -67,35 +64,28 @@ function customer_head(string $title, string $active = 'dashboard'): void
 function customer_shell_start(string $active = 'dashboard'): void
 {
     $nav = [
-        'dashboard' => ['label' => 'Vue d\'ensemble', 'icon' => '◆', 'href' => 'espace-client.php?view=dashboard'],
-        'orders' => ['label' => 'Mes commandes', 'icon' => '▤', 'href' => 'espace-client.php?view=orders'],
-        'track' => ['label' => 'Suivi colis', 'icon' => '◎', 'href' => 'espace-client.php?view=track'],
-        'profile' => ['label' => 'Mon profil', 'icon' => '◉', 'href' => 'espace-client.php?view=profile'],
+        'dashboard' => ['label' => 'Accueil', 'href' => 'espace-client.php?view=dashboard'],
+        'orders' => ['label' => 'Commandes', 'href' => 'espace-client.php?view=orders'],
+        'track' => ['label' => 'Suivi', 'href' => 'espace-client.php?view=track'],
+        'profile' => ['label' => 'Profil', 'href' => 'espace-client.php?view=profile'],
     ];
     ?>
-  <div class="account-shell container">
-    <aside class="account-nav" aria-label="Navigation espace client">
-      <div class="account-nav__brand">
-        <p class="account-nav__eyebrow">Espace client</p>
-        <h2 class="account-nav__title">Mon compte</h2>
+  <div class="account-shell">
+    <nav class="account-topnav" aria-label="Navigation espace client">
+      <div class="container account-topnav__inner">
+        <p class="account-topnav__user" id="accountNavUser"></p>
+        <div class="account-topnav__links">
+          <?php foreach ($nav as $key => $item): ?>
+            <a href="<?= storefront_escape($item['href']) ?>"
+               class="account-topnav__link<?= $active === $key ? ' is-active' : '' ?>"
+               data-nav="<?= storefront_escape($key) ?>">
+              <?= storefront_escape($item['label']) ?>
+            </a>
+          <?php endforeach; ?>
+        </div>
+        <button type="button" class="account-topnav__logout" id="accountNavLogout">Déconnexion</button>
       </div>
-      <nav class="account-nav__links">
-        <?php foreach ($nav as $key => $item): ?>
-          <a href="<?= storefront_escape($item['href']) ?>"
-             class="account-nav__link<?= $active === $key ? ' is-active' : '' ?>"
-             data-nav="<?= storefront_escape($key) ?>">
-            <span class="account-nav__icon" aria-hidden="true"><?= $item['icon'] ?></span>
-            <?= storefront_escape($item['label']) ?>
-          </a>
-        <?php endforeach; ?>
-      </nav>
-      <div class="account-nav__help">
-        <p id="accountNavUser" class="account-nav__user"></p>
-        <p>Besoin d'aide ?</p>
-        <a href="index.php#contact" class="btn btn--ghost btn--sm btn--full">Nous contacter</a>
-        <button type="button" class="btn btn--ghost btn--sm btn--full" id="accountNavLogout" style="margin-top:.5rem">Déconnexion</button>
-      </div>
-    </aside>
+    </nav>
     <main class="account-main" id="accountMain">
     <?php
 }
@@ -105,13 +95,13 @@ function customer_shell_end(): void
     ?>
     </main>
   </div>
-  </div>
-  <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="js/dom-safe.js"></script>
-  <script src="js/store.js"></script>
-  <script src="js/account.js"></script>
-  <script src="js/consent.js"></script>
-  <script src="js/chatbot.js"></script>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="js/dom-safe.js"></script>
+<script src="js/store.js"></script>
+<script src="js/account.js"></script>
+<script src="js/consent.js"></script>
+<script src="js/chatbot.js"></script>
 </body>
 </html>
     <?php

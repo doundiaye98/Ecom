@@ -43,8 +43,8 @@ const PEV = (() => {
   };
 
   const PAYMENT_METHODS = {
-    wave: { label: "Wave", icon: "W" },
-    orange: { label: "Orange Money", icon: "OM" },
+    wave: { label: "Wave", icon: "W", image: "img/wave.jpg" },
+    orange: { label: "Orange Money", icon: "OM", image: "img/orangemoney.jpg" },
     card: { label: "Carte bancaire", icon: "CB" },
     cod: { label: "Paiement à la livraison", icon: "COD" },
   };
@@ -267,7 +267,7 @@ const PEV = (() => {
         paidAt: paid ? now : null,
       },
       shipping: {
-        carrier: "Pure Essence Express",
+        carrier: "Native Vita Express",
         estimatedDays: 3,
         fee: orderData.shipping?.fee || 0,
       },

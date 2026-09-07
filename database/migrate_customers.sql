@@ -1,4 +1,7 @@
--- Migration : comptes clients (installations existantes)
+-- Migration : comptes clients (installations existantes qui ont déjà la table orders)
+-- Si orders n'existe pas (#1146) : installer d'abord database/schema.sql (ou install.php),
+-- puis ignorer les étapes 2–4 (customer_id est déjà dans le schéma).
+--
 -- Compatible MySQL / MariaDB (WAMP) — pas de "IF NOT EXISTS" sur ADD COLUMN
 --
 -- Option A (recommandée) : php database/run_migrate_customers.php
@@ -8,7 +11,7 @@ CREATE TABLE IF NOT EXISTS customers (
     id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
     phone_norm VARCHAR(20) NOT NULL,
     phone_display VARCHAR(50) NOT NULL,
-    email VARCHAR(255) DEFAULT NULL,
+    email VARCHAR(191) DEFAULT NULL,
     password_hash VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL DEFAULT '',
     address TEXT DEFAULT NULL,

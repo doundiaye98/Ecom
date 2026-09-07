@@ -1,6 +1,6 @@
 <?php
 /**
- * Installation Pure Essence Vita
+ * Installation Native Vita
  * Ouvrez : http://localhost/Ecom/install.php
  */
 declare(strict_types=1);
@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $step === 'install') {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Installation — Pure Essence Vita</title>
+  <title>Installation — Native Vita</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     * { box-sizing: border-box; }

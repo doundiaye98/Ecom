@@ -78,8 +78,12 @@
   function setupAuthTabs() {
     $$("[data-auth-tab]").forEach((tab) => {
       tab.addEventListener("click", () => {
-        $$("[data-auth-tab]").forEach((t) => t.classList.remove("is-active"));
+        $$("[data-auth-tab]").forEach((t) => {
+          t.classList.remove("is-active");
+          t.setAttribute("aria-selected", "false");
+        });
         tab.classList.add("is-active");
+        tab.setAttribute("aria-selected", "true");
         const isLogin = tab.dataset.authTab === "login";
         $("#loginForm").hidden = !isLogin;
         $("#registerForm").hidden = isLogin;
@@ -301,7 +305,7 @@
           <div><span>Téléphone</span><strong>${escapeHtml(order.customer?.phone || "—")}</strong></div>
           <div><span>Adresse</span><strong>${escapeHtml(order.customer?.address || "")}${order.customer?.city ? ", " + escapeHtml(order.customer.city) : ""}</strong></div>
           <div><span>Paiement</span><strong>${escapeHtml(payLabel)}${order.payment?.paid ? " · Payé" : ""}</strong></div>
-          <div><span>Transporteur</span><strong>${escapeHtml(order.shipping?.carrier || "Pure Essence Express")}</strong></div>
+          <div><span>Transporteur</span><strong>${escapeHtml(order.shipping?.carrier || "Native Vita Express")}</strong></div>
           <div><span>Total</span><strong>${PEV.formatPrice(order.total)}</strong></div>
         </div>
         <h3 class="track-subtitle">Progression</h3>

@@ -1,9 +1,9 @@
 /* ============================================
-   Pure Essence Vita — Showcase Styles
+   Native Vita — Showcase Styles
    ============================================ */
 
 :root {
-  /* Charte Pure Essence Vita — extraite du logo */
+  /* Charte Native Vita — or / forêt */
   --forest: #0d3d28;
   --forest-deep: #00441b;
   --forest-rich: #1a5c40;
@@ -2036,3 +2036,422 @@ main,
     scroll-behavior: auto;
   }
 }
+
+/* ============================================
+   Native Vita — Premium polish (or / forêt)
+   ============================================ */
+
+body {
+  background:
+    radial-gradient(ellipse 90% 50% at 50% -10%, rgba(212, 175, 55, 0.12), transparent 50%),
+    radial-gradient(ellipse 55% 40% at 100% 40%, rgba(13, 61, 40, 0.06), transparent 55%),
+    var(--bg-logo-metal);
+}
+
+.announcement {
+  background: linear-gradient(90deg, #003816, var(--forest-deep) 40%, #0a4a28 100%);
+  letter-spacing: 0.12em;
+  font-size: 0.72rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.28);
+}
+
+.header {
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  background: rgba(245, 245, 245, 0.78);
+  border-bottom: 1px solid transparent;
+  transition: background 0.35s var(--ease), box-shadow 0.35s, border-color 0.35s;
+}
+
+.header.is-scrolled {
+  background: rgba(255, 255, 255, 0.92);
+  border-bottom-color: rgba(212, 175, 55, 0.22);
+  box-shadow: 0 12px 40px rgba(0, 68, 27, 0.08);
+}
+
+.brand__logo {
+  height: 64px;
+  max-width: min(240px, 48vw);
+  border-radius: 12px;
+  box-shadow:
+    0 8px 28px rgba(0, 68, 27, 0.16),
+    0 0 0 1px rgba(212, 175, 55, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  transition: transform 0.35s var(--ease), box-shadow 0.35s;
+}
+
+.brand:hover .brand__logo {
+  transform: translateY(-1px) scale(1.02);
+  box-shadow:
+    0 12px 32px rgba(0, 68, 27, 0.2),
+    0 0 0 1px rgba(212, 175, 55, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.btn--gold {
+  position: relative;
+  overflow: hidden;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  padding: 1.05rem 1.9rem;
+}
+
+.btn--gold::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg, transparent 30%, rgba(255, 255, 255, 0.45) 50%, transparent 70%);
+  transform: translateX(-120%);
+  transition: transform 0.7s var(--ease);
+}
+
+.btn--gold:hover::after {
+  transform: translateX(120%);
+}
+
+/* Hero cinematic */
+.hero {
+  min-height: calc(100vh - 90px);
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(13, 61, 40, 0.08), transparent 55%),
+    var(--bg-logo-metal);
+}
+
+.hero__bg {
+  background:
+    radial-gradient(ellipse 65% 50% at 80% 10%, rgba(212, 175, 55, 0.18), transparent 50%),
+    radial-gradient(ellipse 50% 45% at 5% 90%, rgba(13, 61, 40, 0.14), transparent 48%),
+    radial-gradient(circle at 50% 40%, rgba(255, 255, 255, 0.35), transparent 60%);
+}
+
+.hero__glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(48px);
+  pointer-events: none;
+  z-index: 0;
+  animation: heroPulse 10s ease-in-out infinite;
+}
+
+.hero__glow--gold {
+  width: min(420px, 70vw);
+  height: min(420px, 70vw);
+  top: -8%;
+  right: -5%;
+  background: rgba(212, 175, 55, 0.28);
+}
+
+.hero__glow--forest {
+  width: min(380px, 65vw);
+  height: min(380px, 65vw);
+  bottom: -12%;
+  left: -8%;
+  background: rgba(26, 92, 64, 0.22);
+  animation-delay: -4s;
+}
+
+.hero__mesh {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.35;
+  background-image:
+    linear-gradient(rgba(13, 61, 40, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(13, 61, 40, 0.03) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 70% 60% at 50% 45%, #000 20%, transparent 75%);
+}
+
+@keyframes heroPulse {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.08); }
+}
+
+.hero__content {
+  padding: 5rem 0 6rem;
+}
+
+.hero__logo {
+  width: min(420px, 84vw);
+  margin-bottom: 2rem;
+  border-radius: 20px;
+  padding: 0.75rem;
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  box-shadow:
+    0 28px 70px rgba(0, 68, 27, 0.22),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+    0 0 60px rgba(212, 175, 55, 0.12);
+  animation: logoFloat 8s ease-in-out infinite;
+}
+
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.hero__title {
+  font-size: clamp(2rem, 6.5vw, 3.6rem);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.85rem;
+  text-shadow: 0 2px 24px rgba(255, 255, 255, 0.35);
+}
+
+.hero__subtitle {
+  font-size: clamp(1rem, 2.2vw, 1.2rem);
+  max-width: 36ch;
+  letter-spacing: 0.01em;
+}
+
+.hero__cta {
+  gap: 1rem;
+  margin-top: 0.25rem;
+}
+
+.hero__scroll {
+  bottom: 2rem;
+}
+
+/* Trust */
+.trust-strip {
+  padding: 1.85rem 0;
+  background:
+    linear-gradient(90deg, rgba(212, 175, 55, 0.15), transparent 30%, transparent 70%, rgba(212, 175, 55, 0.15)),
+    linear-gradient(135deg, #002e14 0%, var(--forest-deep) 45%, #145c3a 100%);
+}
+
+.trust-item strong {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+/* Products */
+.products {
+  padding: 6rem 0 5rem;
+}
+
+.section-title {
+  letter-spacing: -0.02em;
+}
+
+.filter-btn {
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.55);
+  border-color: rgba(13, 61, 40, 0.1);
+}
+
+.filter-btn.is-active {
+  box-shadow: 0 8px 24px rgba(0, 68, 27, 0.2);
+}
+
+.products__grid {
+  gap: 1.75rem;
+}
+
+.product-card {
+  background: linear-gradient(180deg, #fff 0%, #fafafa 100%);
+  border: 1px solid rgba(13, 61, 40, 0.08);
+  border-radius: 22px;
+  box-shadow: 0 4px 20px rgba(0, 68, 27, 0.04);
+}
+
+.product-card:hover {
+  transform: translateY(-10px);
+  box-shadow:
+    0 28px 60px rgba(0, 68, 27, 0.14),
+    0 0 0 1px rgba(212, 175, 55, 0.25);
+}
+
+.product-card__media {
+  background:
+    linear-gradient(145deg, #f5f5f5, #e8e8e8);
+}
+
+.product-card__media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 55%, rgba(0, 68, 27, 0.12));
+  opacity: 0;
+  transition: opacity 0.4s var(--ease);
+  pointer-events: none;
+}
+
+.product-card:hover .product-card__media::after {
+  opacity: 1;
+}
+
+.product-card__badge {
+  background: linear-gradient(135deg, rgba(255, 252, 240, 0.96), rgba(245, 230, 168, 0.9));
+  box-shadow: 0 4px 14px rgba(154, 123, 46, 0.18);
+}
+
+.product-card h3 {
+  font-size: 1.35rem;
+  transition: color 0.25s;
+}
+
+.product-card:hover h3 {
+  color: var(--forest);
+}
+
+.price {
+  font-size: 1.2rem;
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+}
+
+/* Featured editorial */
+.featured__grid {
+  border-radius: 32px;
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  background:
+    radial-gradient(ellipse 60% 80% at 0% 50%, rgba(212, 175, 55, 0.08), transparent 50%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.85), rgba(236, 236, 236, 0.55));
+  box-shadow:
+    0 30px 80px rgba(0, 68, 27, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+}
+
+.featured__visual {
+  border-radius: 24px;
+  box-shadow:
+    0 24px 50px rgba(0, 68, 27, 0.18),
+    0 0 0 1px rgba(212, 175, 55, 0.2);
+}
+
+/* Benefits — less card-y */
+.benefit-card {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  border-radius: 24px;
+  padding: 2.5rem 1.65rem;
+}
+
+.benefit-card__icon {
+  width: 72px;
+  height: 72px;
+  background:
+    radial-gradient(circle at 40% 35%, rgba(240, 216, 117, 0.35), transparent 60%),
+    var(--mint);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+/* Story */
+.story {
+  padding: 6.5rem 0;
+  background:
+    radial-gradient(ellipse 50% 60% at 90% 20%, rgba(212, 175, 55, 0.22), transparent 50%),
+    linear-gradient(165deg, #002912 0%, var(--forest-deep) 40%, #0a3d24 100%);
+}
+
+.story__content p {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  opacity: 0.9;
+}
+
+.stat__num {
+  font-family: var(--font-display);
+  background: var(--gold-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* CTA banner */
+.cta-banner {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(120deg, rgba(212, 175, 55, 0.18), transparent 40%),
+    linear-gradient(180deg, #f7f4ee, #ebe8e0);
+  border-block: 1px solid rgba(212, 175, 55, 0.25);
+  padding: 4.5rem 0;
+}
+
+.cta-banner h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.85rem, 4vw, 2.75rem);
+  color: var(--forest-deep);
+  font-weight: 500;
+}
+
+/* Contact & footer */
+.contact__form {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(0, 68, 27, 0.08);
+  padding: 1.75rem;
+}
+
+.footer {
+  background:
+    linear-gradient(180deg, #001f0e, var(--forest-deep));
+  color: rgba(255, 252, 247, 0.88);
+  border-top: 1px solid rgba(212, 175, 55, 0.25);
+}
+
+.footer__brand img {
+  border-radius: 14px;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.25);
+}
+
+.footer a:hover {
+  color: var(--gold-light);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.loader-logo {
+  width: min(280px, 70vw);
+  border-radius: 18px;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow:
+    0 20px 60px rgba(0, 68, 27, 0.22),
+    0 0 40px rgba(212, 175, 55, 0.15);
+  animation: loaderIn 0.7s var(--ease) forwards, logoFloat 6s ease-in-out 0.7s infinite;
+}
+
+.loader-bar span {
+  background: var(--gold-gradient);
+}
+
+@media (max-width: 768px) {
+  .hero__logo {
+    width: min(300px, 86vw);
+    animation: none;
+  }
+
+  .hero__glow {
+    filter: blur(36px);
+    opacity: 0.7;
+  }
+
+  .hero__mesh {
+    display: none;
+  }
+
+  .brand__logo {
+    height: 48px;
+  }
+}
+

@@ -32,8 +32,8 @@ final class SettingsRepository
             'shippingFee' => self::getInt('shipping_fee', (int) $app['shipping_fee']),
             'freeShippingFrom' => self::getInt('free_shipping_from', (int) $app['free_shipping_from']),
             'siteName' => self::get('site_name', $app['name']),
-            'whatsapp' => self::get('whatsapp', '221000000000'),
-            'contactEmail' => self::get('contact_email', 'contact@pureessencevita.com'),
+            'whatsapp' => self::get('whatsapp', '13478441197'),
+            'contactEmail' => self::get('contact_email', 'contact@nativevita.com'),
             'currency' => $app['currency'] ?? 'XOF',
         ];
     }

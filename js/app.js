@@ -2,7 +2,7 @@
    Pure Essence Vita — Interactive App
    ============================================ */
 
-const WHATSAPP_NUMBER = "221000000000";
+const WHATSAPP_NUMBER = "13478441197";
 
 const state = {
   filter: "all",
@@ -424,7 +424,7 @@ function checkoutWhatsApp() {
     const p = getProduct(item.id);
     return `• ${p.name} × ${item.qty} — ${formatPrice(p.price * item.qty)}`;
   });
-  const text = ["Bonjour Pure Essence Vita", "Je souhaite commander :", "", ...lines, "", `Total : ${formatPrice(cartTotal())}`].join("\n");
+  const text = ["Bonjour Native Vita", "Je souhaite commander :", "", ...lines, "", `Total : ${formatPrice(cartTotal())}`].join("\n");
   window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
 }
 

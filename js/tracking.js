@@ -60,7 +60,7 @@
           <div><span>Téléphone</span><strong>${escapeHtml(order.customer?.phone || "—")}</strong></div>
           <div><span>Adresse</span><strong>${escapeHtml(order.customer?.address || "")}${order.customer?.city ? ", " + escapeHtml(order.customer.city) : ""}</strong></div>
           <div><span>Paiement</span><strong>${escapeHtml(payLabel)}${order.payment?.paid ? " · Payé" : ""}</strong></div>
-          <div><span>Transporteur</span><strong>${escapeHtml(order.shipping?.carrier || "Pure Essence Express")}</strong></div>
+          <div><span>Transporteur</span><strong>${escapeHtml(order.shipping?.carrier || "Native Vita Express")}</strong></div>
           <div><span>Total</span><strong>${PEV.formatPrice(order.total)}</strong></div>
         </div>
 

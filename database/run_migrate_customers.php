@@ -54,7 +54,7 @@ $pdo->exec(
         id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
         phone_norm VARCHAR(20) NOT NULL,
         phone_display VARCHAR(50) NOT NULL,
-        email VARCHAR(255) DEFAULT NULL,
+        email VARCHAR(191) DEFAULT NULL,
         password_hash VARCHAR(255) NOT NULL,
         name VARCHAR(255) NOT NULL DEFAULT \'\',
         address TEXT DEFAULT NULL,

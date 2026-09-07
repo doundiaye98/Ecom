@@ -129,7 +129,7 @@ function migrate_orders_json(PDO $pdo, string $jsonPath): int
             !empty($order['payment']['paid']) ? 1 : 0,
             $order['payment']['reference'] ?? null,
             !empty($order['payment']['paidAt']) ? date('Y-m-d H:i:s', strtotime($order['payment']['paidAt'])) : null,
-            $order['shipping']['carrier'] ?? 'Pure Essence Express',
+            $order['shipping']['carrier'] ?? 'Native Vita Express',
             (int) ($order['shipping']['estimatedDays'] ?? 3),
             !empty($order['deliveryConfirmedAt']) ? date('Y-m-d H:i:s', strtotime($order['deliveryConfirmedAt'])) : null,
             date('Y-m-d H:i:s', strtotime($order['createdAt'] ?? 'now')),

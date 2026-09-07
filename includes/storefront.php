@@ -25,5 +25,5 @@ function storefront_escape(?string $value): string
 
 function storefront_site_name(): string
 {
-    return Env::get('CHATBOT_BRAND_NAME', 'Pure Essence Vita') ?? 'Pure Essence Vita';
+    return Env::get('CHATBOT_BRAND_NAME', 'Native Vita') ?? 'Native Vita';
 }

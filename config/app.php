@@ -1,9 +1,9 @@
 <?php
 /**
- * Configuration application — Pure Essence Vita
+ * Configuration application — Native Vita
  */
 return [
-    'name' => 'Pure Essence Vita',
+    'name' => 'Native Vita',
     'url' => '', // ex: http://localhost/Ecom
     'timezone' => 'Africa/Dakar',
     'currency' => 'XOF',
